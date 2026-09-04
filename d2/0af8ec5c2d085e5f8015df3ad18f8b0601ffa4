@@ -1,0 +1,31 @@
+README.md
+  s_9d1fe641aab724::t_864b2c99e6e7bd 1-21
+docs/rag-lib-requirements.md
+  s_9d1fe641aab724::t_56252e0c662168 1-328
+docs/rag-references-libs.md
+  s_9d1fe641aab724::t_bfb2a070bcbf0b 1-110
+docs/rag-references-research.md
+  s_9d1fe641aab724::t_f16363f610b219 1-96
+docs/rag-references.md
+  s_9d1fe641aab724::t_dfd4ca74ec8b6f 1-73
+docs/rag-vision.md
+  s_9d1fe641aab724::t_209dece3928a80 1-332
+docs/rag-vision.v1-retrieval-lib.md
+  s_9d1fe641aab724::t_229c0aa99ae3de 1-195
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "d20af8ec5c2d085e5f8015df3ad18f8b0601ffa4",
+  "prompts": {},
+  "sessions": {
+    "s_9d1fe641aab724": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b844669e-0f64-4d7d-860a-4dd19a6995b8",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Luis Novo <lfnovo@gmail.com>"
+    }
+  }
+}

@@ -190,15 +190,23 @@ Bloco 2 na prática: um **catálogo de estratégias** registradas por nome, cada
 
 ```python
 class ChunkingStrategy(Protocol):
-    name: str; version: str
+    name: str
+    version: str
+
     def split(self, extracted: Extracted) -> list[Unit]: ...
 
-class DerivationStrategy(Protocol):          # insights, resumos, transformations
-    name: str; version: str
+
+class DerivationStrategy(Protocol):  # insights, resumos, transformations
+    name: str
+    version: str
+
     async def derive(self, source: Unit | Extracted, model: LanguageModel) -> list[Unit]: ...
 
-class ComputeStrategy(Protocol):             # fatos computados
-    name: str; version: str
+
+class ComputeStrategy(Protocol):  # fatos computados
+    name: str
+    version: str
+
     def compute(self, inputs: Any) -> list[Unit]: ...
 ```
 
@@ -225,24 +233,40 @@ Um objeto Python declarativo, validado no startup, exportável como JSON para o 
 ```python
 ontology = Ontology(
     types=[
-        UnitType("passage",  table="source_embedding", nature="original",
-                 id=StableId.of("source", "text_version", "chunker", "order"),
-                 text=Field("content"), context=Render(with_neighbors),
-                 locator=Locator(source="source", order="order", heading="heading"),
-                 verifier=QuoteMatch(source_text="source.full_text")),
-        UnitType("insight",  table="source_insight", nature="derived",
-                 text=Field("content"), verifier=DerivationIntact(version="pipeline_version")),
-        UnitType("note",     table="note", nature="authored", text=Fields("title", "content")),
-        UnitType("entity",   table="entity", nature="original",
-                 text=Render(entity_card), verifier=Exists()),          # exemplo J
-        UnitType("fact",     table="fact", nature="computed",
-                 text=Render(fact_sentence), verifier=Recompute(analyzer)),  # exemplo Smart Fit
+        UnitType(
+            "passage",
+            table="source_embedding",
+            nature="original",
+            id=StableId.of("source", "text_version", "chunker", "order"),
+            text=Field("content"),
+            context=Render(with_neighbors),
+            locator=Locator(source="source", order="order", heading="heading"),
+            verifier=QuoteMatch(source_text="source.full_text"),
+        ),
+        UnitType(
+            "insight",
+            table="source_insight",
+            nature="derived",
+            text=Field("content"),
+            verifier=DerivationIntact(version="pipeline_version"),
+        ),
+        UnitType("note", table="note", nature="authored", text=Fields("title", "content")),
+        UnitType(
+            "entity", table="entity", nature="original", text=Render(entity_card), verifier=Exists()
+        ),  # exemplo J
+        UnitType(
+            "fact",
+            table="fact",
+            nature="computed",
+            text=Render(fact_sentence),
+            verifier=Recompute(analyzer),
+        ),  # exemplo Smart Fit
     ],
     relations=[
         Relation("depends_on", "insight", "source"),
-        Relation("mentions",   "note", ["source", "note"]),
+        Relation("mentions", "note", ["source", "note"]),
         Relation("belongs_to", "source", "notebook"),
-        Relation("about",      "news", "entity", weight="weight"),   # exemplo J
+        Relation("about", "news", "entity", weight="weight"),  # exemplo J
     ],
     scopes=[Scope("notebook", via="belongs_to"), Scope("source"), Scope("entity", via="about")],
     freshness=[Freshness("news", field="published_at", decay="30d")],
@@ -266,16 +290,19 @@ Bloco 4, contrato mínimo #1. As suas estratégias de acesso são funções suas
 
 ```python
 @access_tool(name="entity_neighbors", scope="entity", returns=Refs)
-async def entity_neighbors(entity_id: str, hops: int = 1) -> list[Ref]:
-    ...  # sua query no grafo
+async def entity_neighbors(entity_id: str, hops: int = 1) -> list[Ref]: ...  # sua query no grafo
+
 
 @access_tool(name="keyword_overview", scope="notebook", returns=Candidates)
-async def keyword_overview(terms: list[str], scope: ScopeValue) -> list[Candidate]:
-    ...  # sua busca de cobertura a 30 mil pés
+async def keyword_overview(
+    terms: list[str], scope: ScopeValue
+) -> list[Candidate]: ...  # sua busca de cobertura a 30 mil pés
+
 
 @access_tool(name="notebook_briefing", scope="notebook", returns=Units)
-async def notebook_briefing(notebook_id: str) -> list[Unit]:
-    ...  # descritivos, insights e notas do notebook, antes de abrir qualquer conteúdo
+async def notebook_briefing(
+    notebook_id: str,
+) -> list[Unit]: ...  # descritivos, insights e notas do notebook, antes de abrir qualquer conteúdo
 ```
 
 O decorator faz o que é comum: valida o escopo contra a ontologia, normaliza o retorno para **referências** (candidato, unidade ou receipt — sempre com id e tipo), registra o evento de acesso, e publica a tool no registry. Do registry saem, sem código adicional, as versões LangChain e MCP.
@@ -297,10 +324,10 @@ Uma política por projeto, lida por todas as capacidades:
 
 ```python
 EvidencePolicy(
-    attribution="always",                       # camada mínima: sempre
-    structural=True,                            # existe · escopo · versão · foi entregue
-    fact_check=FactCheck(verifier="hhem", threshold=0.6, on_fail="mark"),   # ou None
-    retention=Retention(keep_cited_versions=True, ttl_uncited="90d"),       # ou None
+    attribution="always",  # camada mínima: sempre
+    structural=True,  # existe · escopo · versão · foi entregue
+    fact_check=FactCheck(verifier="hhem", threshold=0.6, on_fail="mark"),  # ou None
+    retention=Retention(keep_cited_versions=True, ttl_uncited="90d"),  # ou None
 )
 ```
 

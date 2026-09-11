@@ -21,12 +21,12 @@ Você diz o que a sua unidade *é*; a biblioteca só precisa saber cinco coisas 
 
 ```python
 class RetrievalUnit(Protocol):
-    id: str                    # estável — sobrevive a re-embedding e reprocessamento
-    text_for_embedding: str    # otimizado para ser encontrado
-    text_for_context: str      # otimizado para o modelo entender
-    locator: Locator           # como o humano chega até aqui: source, trecho, página, ordem
-    provenance: Provenance     # de onde veio, e se é original, derivado ou autoral
-    scope_keys: dict           # filtros que só você interpreta
+    id: str  # estável — sobrevive a re-embedding e reprocessamento
+    text_for_embedding: str  # otimizado para ser encontrado
+    text_for_context: str  # otimizado para o modelo entender
+    locator: Locator  # como o humano chega até aqui: source, trecho, página, ordem
+    provenance: Provenance  # de onde veio, e se é original, derivado ou autoral
+    scope_keys: dict  # filtros que só você interpreta
 ```
 
 Um chunk de PDF, um insight extraído por LLM e um número calculado a partir de uma tabela satisfazem o mesmo protocolo sem se converter um no outro.
@@ -141,12 +141,15 @@ class PassageAdapter(UnitAdapter):
             text_for_embedding=chunk.text,
             text_for_context=chunk.text_with_neighbors(),
             locator=Locator(source=chunk.source_id, span=chunk.span, order=chunk.order),
-            provenance=Provenance(kind="original", parents=[chunk.source_id], pipeline_version="chunker@3"),
+            provenance=Provenance(
+                kind="original", parents=[chunk.source_id], pipeline_version="chunker@3"
+            ),
             scope_keys={"notebook_ids": chunk.notebook_ids, "source_id": chunk.source_id},
         )
 
-    async def load_source_text(self, locator) -> str:      # só o verifier chama
+    async def load_source_text(self, locator) -> str:  # só o verifier chama
         return (await Source.get(locator.source)).full_text
+
 
 registry.register(PassageAdapter(), NoteAdapter(), InsightAdapter(), ArtifactUnitAdapter())
 ```
@@ -154,10 +157,12 @@ registry.register(PassageAdapter(), NoteAdapter(), InsightAdapter(), ArtifactUni
 A indexação é **push, explícita**: a sua app chama a biblioteca quando ela já sabe que algo mudou — a biblioteca não observa o seu banco.
 
 ```python
-await index.upsert([PassageAdapter().to_unit(c) for c in chunks])   # source processada
-await index.upsert([NoteAdapter().to_unit(note)])                   # nota salva
-await index.delete(scope={"source_id": source.id})                  # source removida
-await index.rebuild(kind="passage", source=PassageAdapter().iter_all())  # troca de embedding, migração
+await index.upsert([PassageAdapter().to_unit(c) for c in chunks])  # source processada
+await index.upsert([NoteAdapter().to_unit(note)])  # nota salva
+await index.delete(scope={"source_id": source.id})  # source removida
+await index.rebuild(
+    kind="passage", source=PassageAdapter().iter_all()
+)  # troca de embedding, migração
 ```
 
 O upsert é por `id` estável: mesmo texto e mesmo chunker geram os mesmos ids, então reprocessar só re-embeda se o modelo de embedding mudou; texto novo gera id novo e a versão anterior fica retida se houver citação dependente. A biblioteca guarda a sua própria cópia da unidade (projeções, locator, proveniência, escopo, vetor) em tabelas próprias — por isso a busca devolve receipts sem voltar na sua app; a única volta é na verificação (`load_source_text` para o `QuoteMatch`, o seu analyzer para o `Recompute`). Esquecer de indexar é custo seu; `rebuild` idempotente é a rede de segurança. A biblioteca não chunka por você; se quiser, o chunker é utilitário opcional.
@@ -166,14 +171,16 @@ O upsert é por `id` estável: mesmo texto e mesmo chunker geram os mesmos ids, 
 
 ```python
 # contexto pré-montado: busca + abre de uma vez
-bundle     = await retrieve(query, scope=Scope(notebook_ids=[...]), budget=Budget(context_tokens=12_000))
+bundle = await retrieve(
+    query, scope=Scope(notebook_ids=[...]), budget=Budget(context_tokens=12_000)
+)
 
 # agente sob orçamento: escolhe antes de abrir
 candidates = await search_knowledge(query, scope=Scope(notebook_ids=[...]), budget=Budget(k=20))
-evidence   = await read_evidence([c.id for c in chosen])
+evidence = await read_evidence([c.id for c in chosen])
 
 # em ambos: validar o que foi citado
-report     = await validate_claims(answer.claims, evidence_ids=[e.id for e in evidence])
+report = await validate_claims(answer.claims, evidence_ids=[e.id for e in evidence])
 ```
 
 As mesmas funções servem uma chamada única com contexto pré-montado, um deep agent iterativo e um servidor MCP consumido por um agente externo. Embrulhá-las como tools do LangChain ou do MCP é uma dúzia de linhas — sua, não nossa.

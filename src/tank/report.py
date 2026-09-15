@@ -27,6 +27,18 @@ NOT_VERIFIED: list[str] = [
     "content quality or completeness of the data itself",
     "search/ranking behavior — no access queries are executed by `tank check`",
     "semantic direction of relations — structure is checked, meaning is not",
+    (
+        "sampling coverage — samples read the first N rows (typically the oldest), and a "
+        "field explicitly set to null counts as present"
+    ),
+    (
+        "declared-but-inert constructs — `nature` and `StableId.version_fields` are recorded "
+        "in the declaration but no 0.1 check consumes them yet"
+    ),
+    (
+        "index location — 0.1 requires ANN/FTS indexes in the consumer's own tables; a "
+        "Tank-owned index projection would move these checks' target"
+    ),
 ]
 
 
@@ -35,7 +47,7 @@ class Finding(BaseModel):
 
     code: str
     status: Status
-    subject: str  # e.g. "type:laudo", "relation:liga", "freshness:laudo"
+    subject: str  # e.g. "type:report", "relation:mentions", "freshness:news"
     table: str | None = None
     message: str
 

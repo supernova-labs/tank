@@ -56,9 +56,25 @@ async def run_check(
         db = await intro.db_info()
 
         for unit_type in ontology.types:
-            await _check_unit_type(intro, db, unit_type, report)
+            try:
+                await _check_unit_type(intro, db, unit_type, report)
+            except Exception as exc:  # noqa: BLE001 - one crashed check must not hide the rest
+                report.add(
+                    "CHK-000",
+                    "FAIL",
+                    f"type:{unit_type.name}",
+                    f"check crashed: {exc!r} — remaining checks continued",
+                )
         for relation in ontology.relations:
-            await _check_relation(intro, db, ontology, relation, report)
+            try:
+                await _check_relation(intro, db, ontology, relation, report)
+            except Exception as exc:  # noqa: BLE001
+                report.add(
+                    "CHK-000",
+                    "FAIL",
+                    f"relation:{relation.name}",
+                    f"check crashed: {exc!r} — remaining checks continued",
+                )
         for fresh in ontology.freshness:
             _check_freshness_static(ontology, fresh, report)
 
@@ -169,6 +185,16 @@ async def _check_unit_type(
                     f"sampled embedding dimensions all match {unit_type.vector.dim}",
                     table=table,
                 )
+            else:
+                report.add(
+                    "VEC-010",
+                    "VACUOUS",
+                    subject,
+                    f"table {table!r} has {total} rows but none carries an embedding in "
+                    f"{unit_type.vector.field!r} — vector search would return nothing "
+                    "(has the embedding job run?)",
+                    table=table,
+                )
 
     # FTS — fulltext declaration ⇒ FTS index + analyzer
     if unit_type.fulltext:
@@ -272,6 +298,10 @@ def _check_attr_type(
 
 
 def _check_vector_index(info: TableInfo, unit_type: UnitType, report: Report) -> None:
+    # Deliberate, reversible bet: 0.1 requires the ANN index (and the embedding
+    # column) to live in the consumer's own table. If a Tank-owned index
+    # projection lands later, VEC-*/FTS-* change target to the projection and
+    # Vector.model becomes Tank config. Recorded in the report's not_verified list.
     subject = f"type:{unit_type.name}"
     vector = unit_type.vector
     assert vector is not None
@@ -420,8 +450,8 @@ async def _check_relation(
     count = await intro.count(edge_table)
     report.table_counts[edge_table] = count
 
-    if table_ddl.kind == "relation":
-        # strong path: TYPE RELATION — server enforces direction itself
+    if table_ddl.kind == "relation" and (table_ddl.in_tables or table_ddl.out_tables):
+        # strong path: TYPE RELATION IN/OUT — server enforces direction itself
         problems = []
         if table_ddl.in_tables and from_table not in table_ddl.in_tables:
             problems.append(f"IN is {table_ddl.in_tables}, expected {from_table!r}")
@@ -446,15 +476,18 @@ async def _check_relation(
                 "enforces direction on write",
                 table=edge_table,
             )
-    elif table_ddl.kind == "any":
-        # weak path: implicit RELATE table — sample endpoints
+    elif table_ddl.kind in ("any", "relation"):
+        # weak path: TYPE ANY (implicit RELATE table) or TYPE RELATION without
+        # IN/OUT — in both cases nothing enforces direction on write, so sample
         if count == 0:
             report.add(
                 "REL-002",
                 "VACUOUS",
                 subject,
-                f"edge {edge_table!r} is TYPE ANY (implicit) and empty — direction cannot be "
-                "verified; recommend DEFINE TABLE ... TYPE RELATION IN/OUT",
+                f"edge {edge_table!r} has no IN/OUT constraint "
+                f"({'TYPE RELATION without IN/OUT' if table_ddl.kind == 'relation' else 'TYPE ANY'}) "
+                "and is empty — direction cannot be verified; recommend "
+                f"DEFINE TABLE {edge_table} TYPE RELATION IN {from_table} OUT {to_table}",
                 table=edge_table,
             )
         else:
@@ -465,8 +498,8 @@ async def _check_relation(
                     "REL-002",
                     "FAIL",
                     subject,
-                    f"edge {edge_table!r} (TYPE ANY) has sampled endpoints {sorted(bad)}, "
-                    f"expected ({from_table!r}, {to_table!r})",
+                    f"edge {edge_table!r} (no IN/OUT constraint) has sampled endpoints "
+                    f"{sorted(bad)}, expected ({from_table!r}, {to_table!r})",
                     table=edge_table,
                 )
             else:
@@ -474,8 +507,8 @@ async def _check_relation(
                     "REL-002",
                     "WARN",
                     subject,
-                    f"edge {edge_table!r} endpoints match by sampling, but the table is "
-                    "TYPE ANY — nothing defends direction on write; recommend "
+                    f"edge {edge_table!r} endpoints match by sampling, but it has no "
+                    "IN/OUT constraint — nothing defends direction on write; recommend "
                     f"DEFINE TABLE {edge_table} TYPE RELATION IN {from_table} OUT {to_table}",
                     table=edge_table,
                 )
@@ -492,6 +525,15 @@ async def _check_relation(
     # weight field on the edge (per-field dichotomy again)
     if relation.weight:
         weight_field = relation.weight.field
+        if not is_safe_identifier(weight_field):
+            report.add(
+                "FLD-000",
+                "FAIL",
+                subject,
+                f"weight field name {weight_field!r} is not a plain identifier",
+                table=edge_table,
+            )
+            return
         if weight_field in info.fields:
             report.add(
                 "REL-004",
@@ -540,6 +582,15 @@ async def _check_field_link(
     subject = f"relation:{relation.name}"
     link_field = relation.field
     assert link_field is not None
+    if not is_safe_identifier(link_field):
+        report.add(
+            "FLD-000",
+            "FAIL",
+            subject,
+            f"field_link field name {link_field!r} is not a plain identifier",
+            table=from_table,
+        )
+        return
     if from_table not in db.tables:
         return  # TBL-001 on the owning type already failed
     info = await intro.table_info(from_table)

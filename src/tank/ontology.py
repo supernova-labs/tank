@@ -72,7 +72,7 @@ class OntologyError(Exception):
 class _PosModel(BaseModel):
     """Pydantic model that also accepts positional args, in field-declaration order.
 
-    Keeps the ergonomic style of the vision doc: ``UnitType("laudo", table=...)``.
+    Keeps the ergonomic style of the vision doc: ``UnitType("report", table=...)``.
     """
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
@@ -100,7 +100,7 @@ class Attr(_PosModel):
     """A queryable field of a unit type: the agent may filter/order/project by it.
 
     ``values`` optionally declares the closed vocabulary of the field
-    (e.g. ``["vigente", "revogado"]``); ``tank check`` verifies it by sampling.
+    (e.g. ``["current", "revoked"]``); ``tank check`` verifies it by sampling.
     """
 
     name: str = Field(min_length=1)
@@ -116,13 +116,20 @@ class Attr(_PosModel):
 
 
 class StableId(_PosModel):
-    """How the stable identity of a unit is derived (field tuple, hashed by the consumer)."""
+    """How the stable identity of a unit is derived (field tuple, hashed by the consumer).
+
+    ``fields`` name what makes a unit *the same unit* across time; the optional
+    ``version_fields`` name what changes when the unit is reprocessed (source
+    text version, chunker version, content hash). Keeping the two apart is what
+    lets a future check verify that ids survive reprocessing.
+    """
 
     fields: list[str] = Field(min_length=1)
+    version_fields: list[str] = Field(default_factory=list)
 
     @classmethod
-    def of(cls, *fields: str) -> StableId:
-        return cls(fields=list(fields))
+    def of(cls, *fields: str, version: list[str] | None = None) -> StableId:
+        return cls(fields=list(fields), version_fields=version or [])
 
 
 class Locator(BaseModel):
@@ -201,6 +208,7 @@ class UnitType(_PosModel):
             fields.update(self.text)
         if self.id:
             fields.update(self.id.fields)
+            fields.update(self.id.version_fields)
         fields.update(a.name for a in self.attrs)
         if self.locator:
             fields.update(self.locator.fields().values())

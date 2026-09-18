@@ -25,30 +25,40 @@ The two real challenges: **indexing and ontology** (what the library validates �
 
 ## Tank 0.1 — the validator (`tank check`)
 
-0.1 ships the first piece: **ontology as Pydantic code + deterministic checking against SurrealDB** — no LLM involved, CI-ready. This is the *validator milestone* of the first phase; the second half (the skill that lets an agent write access functions reading only the ontology) comes next.
+0.1 ships the first piece: **ontology as typed code + deterministic checking against SurrealDB** — no LLM involved, CI-ready. This is the *validator milestone* of the first phase; the second half (the skill that lets an agent write access functions reading only the ontology) comes next.
 
-**1. Declare your ontology** (`ontology.py` in your project):
+**1. Declare your ontology** — one class per unit type, one per edge table (`ontology.py` in your project, kept free of database connections and settings):
 
 ```python
-from tank import Attr, Ontology, StableId, UnitType
+from datetime import datetime
+from typing import Annotated, Literal
 
-ontology = Ontology(
-    types=[
-        UnitType(
-            "report",
-            table="technical_assessment",  # YOUR table; Tank never writes to it
-            id=StableId.of("code"),
-            text="body_text",
-            attrs=[
-                Attr("status", "string", values=["current", "revoked"]),
-                Attr("issued_at", "datetime"),
-            ],
-        ),
-    ],
-)
+from tank import Ages, Edge, Embedding, Key, Link, Ontology, Searchable, Text, Unit, Weighted
+
+
+class Agency(Unit, table="agency"):
+    acronym: str
+
+
+class Report(Unit, table="technical_assessment", nature="original"):  # YOUR table; Tank never writes to it
+    code: Annotated[str, Key()]                       # stable identity
+    body_text: Annotated[str, Text(), Searchable(analyzer="az_en")]
+    status: Literal["current", "revoked"]             # closed vocabulary, verified by sampling
+    issued_at: Annotated[datetime, Ages("365d")]      # freshness signal
+    emb: Embedding[1536] | None = None                # ⇒ an HNSW index of DIMENSION 1536 must exist
+    agency: Link[Agency]                              # record link ⇒ field_link relation "agency"
+
+
+class Supersedes(Edge, src=Report, dst=Report):       # RELATE edge table "supersedes"
+    extent: Annotated[float, Weighted(range=(0.0, 1.0))]
+
+
+ontology = Ontology.of(Agency, Report, Supersedes)
 ```
 
-An internally inconsistent ontology (a relation pointing at an undeclared type, a scope without its relation, a vector without a dimension…) **blows up at import time** with every `ONT-*` code at once — the build breaks before any database connection exists.
+The classes are plain pydantic models: `Report(**row)` parses a row from the database, access tools can return `list[Report]`, and renaming a field renames the declaration — there is no second copy to drift. Every field is a queryable attr unless it is a link, an embedding, a `Text()` field or marked `Hidden()`. Computed text (an entity card, a fact sentence) is a method decorated with `@rendered_text`.
+
+`Ontology.of(...)` derives the declarative representation (`UnitType`, `Relation`, …) that `tank check` validates and that exports as JSON for the agent skill. An internally inconsistent ontology (a link to a class you did not pass, a scope without its relation, two `Searchable()` fields…) **blows up at import time** — the build breaks before any database connection exists.
 
 **2. Run the check:**
 

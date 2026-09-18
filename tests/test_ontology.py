@@ -112,6 +112,19 @@ def test_vector_requires_positive_dim_and_known_metric():
 def test_empty_attr_values_rejected():
     with pytest.raises(ValueError):
         Attr("status", "string", values=[])
+    with pytest.raises(ValueError):
+        Attr("status", "string", values={})
+
+
+def test_attr_values_as_mapping():
+    attr = Attr("status", "string", values={"c_04": "published", "c_11": "killed"})
+    assert attr.value_codes() == ["c_04", "c_11"]
+    assert Attr("status", "string", values=["current", "revoked"]).value_codes() == [
+        "current",
+        "revoked",
+    ]
+    with pytest.raises(ValueError):
+        Attr("status", "string", values={"c_04": ""})
 
 
 def test_edge_relation_defaults_table_to_name():

@@ -138,14 +138,14 @@ async def _check_unit_type(
     for attr in unit_type.attrs:
         if attr.values and total > 0 and is_safe_identifier(attr.name):
             observed = await intro.sample_values(table, attr.name)
-            unexpected = sorted({str(v) for v in observed} - set(attr.values))
+            unexpected = sorted({str(v) for v in observed} - set(attr.value_codes()))
             if unexpected:
                 report.add(
                     "ATTR-010",
                     "WARN",
                     subject,
                     f"attr {attr.name!r}: sampled values {unexpected} are outside the "
-                    f"declared vocabulary {attr.values}",
+                    f"declared vocabulary {attr.value_codes()}",
                     table=table,
                 )
             else:

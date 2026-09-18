@@ -19,7 +19,11 @@ Design notes:
   value vocabulary — what an agent needs to write a WHERE/ORDER BY without
   guessing.
 - ``nature`` is the epistemic nature of a unit type (rag-vision.md): original /
-  derived / authored / computed.
+  derived / authored / computed. It is a cost saver rather than a hard
+  requirement: in an agent ablation study, agents recovered the
+  original/derived distinction without it, but at roughly double the query
+  cost — and table names actively mislead (a "brief" can be machine-derived, a
+  "factbox" human-curated).
 """
 
 from __future__ import annotations
@@ -99,20 +103,39 @@ AttrType = Literal[
 class Attr(_PosModel):
     """A queryable field of a unit type: the agent may filter/order/project by it.
 
-    ``values`` optionally declares the closed vocabulary of the field
-    (e.g. ``["current", "revoked"]``); ``tank check`` verifies it by sampling.
+    ``values`` optionally declares the closed vocabulary of the field, either as
+    a list (``["current", "revoked"]``) or as a mapping code -> meaning
+    (``{"c_11": "killed by the editors", ...}``). Prefer the mapping whenever the
+    codes are not self-describing: an agent ablation study showed a bare code
+    list is worth almost nothing to an agent — it can already discover the list
+    from the data — while the code->meaning mapping is what turns a six-query
+    guess into a one-query answer. ``tank check`` verifies the vocabulary (list
+    entries or mapping keys) by sampling.
     """
 
     name: str = Field(min_length=1)
     type: AttrType
-    values: list[str] | None = None
+    values: list[str] | dict[str, str] | None = None
     description: str | None = None
 
     @model_validator(mode="after")
     def _non_empty_values(self) -> Attr:
         if self.values is not None and len(self.values) == 0:
             raise ValueError(f"attr {self.name!r}: `values`, when given, must be non-empty")
+        if isinstance(self.values, dict):
+            for code, meaning in self.values.items():
+                if not meaning:
+                    raise ValueError(
+                        f"attr {self.name!r}: value {code!r} has an empty meaning — "
+                        "use a list if the codes are self-describing"
+                    )
         return self
+
+    def value_codes(self) -> list[str]:
+        """The allowed codes, whichever form ``values`` was declared in."""
+        if self.values is None:
+            return []
+        return list(self.values)
 
 
 class StableId(_PosModel):
@@ -138,6 +161,12 @@ class Locator(BaseModel):
     Free-form mapping ``role -> field name`` (e.g. ``source=\"codigo\"``,
     ``order=\"chunk_order\"``). Every value must be a field name (str); the
     connected checks verify those fields exist.
+
+    The ``order`` role is load-bearing: when a table carries more than one
+    plausible ordering field (ingestion sequence, relevance score, offset), an
+    agent without this declaration picks the wrong one — in an agent ablation
+    study, removing the locator took in-order retrieval from 6/6 to 0/6, and the
+    agents did not notice they had ordered by the wrong field.
     """
 
     model_config = ConfigDict(extra="allow")

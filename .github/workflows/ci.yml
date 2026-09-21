@@ -1,0 +1,36 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Start SurrealDB (v3)
+        run: |
+          docker run -d --name surreal -p 8019:8000 surrealdb/surrealdb:v3 \
+            start --user root --pass root --allow-all
+          for i in $(seq 1 30); do
+            curl -sf http://127.0.0.1:8019/version && break
+            sleep 1
+          done
+
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Install
+        run: uv sync
+
+      - name: Lint
+        run: |
+          uv run ruff check src tests
+          uv run ruff format --check src tests
+
+      - name: Test (static + integration)
+        env:
+          TANK_TEST_URL: http://127.0.0.1:8019
+        run: uv run pytest -q

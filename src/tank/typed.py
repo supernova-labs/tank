@@ -24,7 +24,8 @@ Rules:
   undefined names.
 - Every model field becomes a queryable ``Attr`` unless it is a link, an
   embedding, a ``Text()`` field, the record ``id``, or marked ``Hidden()``.
-  ``Literal[str, ...]`` becomes the attr's closed vocabulary.
+  ``Literal[str, ...]`` becomes the attr's closed vocabulary. ``Values({...})``
+  gives stored codes human meanings so agents can choose the right filter.
 - Computed text (entity cards, fact sentences) is a method decorated with
   ``@rendered_text``; the declaration records ``Rendered(method=...)``.
 - Declaration modules must stay pure: no database connections, no settings —
@@ -77,6 +78,7 @@ __all__ = [
     "Searchable",
     "Text",
     "Unit",
+    "Values",
     "Version",
     "Weighted",
     "build_ontology",
@@ -147,6 +149,17 @@ class Named:
     """Override the relation name of a ``Link`` field (default: the field name)."""
 
     name: str
+
+
+@dataclass(frozen=True)
+class Values:
+    """Closed vocabulary for an attr, optionally mapping stored code to meaning.
+
+    ``Literal[...]`` is sufficient for self-describing values. Combine both
+    when the database stores opaque or abbreviated codes.
+    """
+
+    values: list[str] | dict[str, str]
 
 
 @dataclass(frozen=True)
@@ -382,6 +395,7 @@ def _derive_unit(
         dim = _one(markers, _Dim, here)
         embed = _one(markers, Embed, here)
         named = _one(markers, Named, here)
+        declared_values = _one(markers, Values, here)
         is_text = _one(markers, Text, here) is not None
 
         if _one(markers, Key, here):
@@ -426,6 +440,20 @@ def _derive_unit(
             # record id is not a DEFINE FIELD.
             continue
         attr_type, values = _attr_type_of(info.annotation, here)
+        if declared_values is not None:
+            marker_values = declared_values.values
+            if not marker_values:
+                raise DeclarationError(f"{here}: Values() must not be empty")
+            if isinstance(marker_values, dict) and any(
+                not meaning for meaning in marker_values.values()
+            ):
+                raise DeclarationError(f"{here}: Values() meanings must not be empty")
+            if values is not None and set(values) != set(marker_values):
+                raise DeclarationError(
+                    f"{here}: Values() codes must match the Literal values "
+                    f"({sorted(values)!r} != {sorted(marker_values)!r})"
+                )
+            values = marker_values
         attrs.append(
             Attr(name=field_name, type=attr_type, values=values, description=info.description)
         )

@@ -37,6 +37,7 @@ from tank import (
     Searchable,
     Text,
     Unit,
+    Values,
     Version,
     Weighted,
     rendered_text,
@@ -124,6 +125,40 @@ def test_field_mapping_rules():
     assert by_name["tags"].type == "array"
     assert by_name["meta"].type == "object"
     assert Item.__tank_freshness__ == [("when", Ages("7d"))]
+
+
+def test_serialized_typed_values_let_an_agent_build_the_correct_priority_filter():
+    class Ticket(Unit, table="ticket"):
+        priority: Annotated[
+            Literal["p1", "p2", "p3"],
+            Values({"p1": "high", "p2": "medium", "p3": "low"}),
+        ]
+
+    contract = Ontology.model_validate_json(Ontology.of(Ticket).to_json())
+    priority = contract.type_named("ticket").attrs[0]
+
+    # Minimal stand-in for the agent's contract lookup: select the stored code by
+    # its declared meaning, then use the declared type to serialize the literal.
+    requested = "high"
+    assert isinstance(priority.values, dict)
+    code = next(code for code, meaning in priority.values.items() if meaning == requested)
+    literal = f"'{code}'" if priority.type == "string" else code
+
+    assert priority.type == "string"
+    assert priority.values == {"p1": "high", "p2": "medium", "p3": "low"}
+    assert f"{priority.name} = {literal}" == "priority = 'p1'"
+
+
+def test_values_marker_must_agree_with_literal_and_have_meanings():
+    with pytest.raises(DeclarationError, match="must match the Literal"):
+
+        class Mismatch(Unit, table="mismatch"):
+            priority: Annotated[Literal["p1", "p2"], Values({"p1": "high"})]
+
+    with pytest.raises(DeclarationError, match="meanings must not be empty"):
+
+        class EmptyMeaning(Unit, table="empty_meaning"):
+            priority: Annotated[Literal["p1"], Values({"p1": ""})]
 
 
 def test_embedding_defaults_to_cosine_without_embed_marker():

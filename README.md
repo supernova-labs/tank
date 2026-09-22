@@ -33,7 +33,7 @@ The two real challenges: **indexing and ontology** (what the library validates �
 from datetime import datetime
 from typing import Annotated, Literal
 
-from tank import Ages, Edge, Embedding, Key, Link, Ontology, Searchable, Text, Unit, Weighted
+from tank import Ages, Edge, Embedding, Key, Link, Ontology, Searchable, Text, Unit, Values, Weighted
 
 
 class Agency(Unit, table="agency"):
@@ -44,6 +44,10 @@ class Report(Unit, table="technical_assessment", nature="original"):  # YOUR tab
     code: Annotated[str, Key()]                       # stable identity
     body_text: Annotated[str, Text(), Searchable(analyzer="az_en")]
     status: Literal["current", "revoked"]             # closed vocabulary, verified by sampling
+    priority: Annotated[
+        Literal["p1", "p2", "p3"],
+        Values({"p1": "high", "p2": "medium", "p3": "low"}),
+    ]                                                   # codes + meanings for agent filters
     issued_at: Annotated[datetime, Ages("365d")]      # freshness signal
     emb: Embedding[1536] | None = None                # ⇒ an HNSW index of DIMENSION 1536 must exist
     agency: Link[Agency]                              # record link ⇒ field_link relation "agency"

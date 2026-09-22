@@ -37,12 +37,23 @@ def build(
     class Feed(Unit, table="feed"):
         name: str
 
-    class News(Unit, table="news", nature="original"):
-        title: Annotated[str, Key()]
-        body: Annotated[str, Text(), Searchable(analyzer=analyzer, language="english")]
-        published_at: Annotated[datetime, Key(), Ages("30d")]
-        emb: Annotated[Embedding[dim], Embed(metric=metric)] | None = None  # type: ignore[valid-type]
-        __annotations__[feed_field] = Annotated[Link[Feed], Named("from_feed")]
+    if feed_field == "feed":
+
+        class News(Unit, table="news", nature="original"):
+            title: Annotated[str, Key()]
+            body: Annotated[str, Text(), Searchable(analyzer=analyzer, language="english")]
+            published_at: Annotated[datetime, Key(), Ages("30d")]
+            emb: Annotated[Embedding[dim], Embed(metric=metric)] | None = None  # type: ignore[valid-type]
+            feed: Annotated[Link[Feed], Named("from_feed")]
+
+    else:
+
+        class News(Unit, table="news", nature="original"):
+            title: Annotated[str, Key()]
+            body: Annotated[str, Text(), Searchable(analyzer=analyzer, language="english")]
+            published_at: Annotated[datetime, Key(), Ages("30d")]
+            emb: Annotated[Embedding[dim], Embed(metric=metric)] | None = None  # type: ignore[valid-type]
+            feed_ref: Annotated[Link[Feed], Named("from_feed")]
 
     class Entity(Unit, table="entity"):
         name: str

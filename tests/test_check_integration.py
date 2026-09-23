@@ -21,6 +21,7 @@ from ontology import build as build_news
 
 from tank import Attr, Locator, Ontology, StableId, UnitType
 from tank.checks import run_check
+from tank.introspect import Introspector
 
 URL = os.environ.get("TANK_TEST_URL", "http://127.0.0.1:8019")
 USER = os.environ.get("TANK_TEST_USER", "root")
@@ -266,3 +267,64 @@ async def test_report_json_serializes(database):
     parsed = json.loads(report.model_dump_json())
     assert parsed["namespace"] == NS
     assert parsed["not_verified"]
+
+
+# ------------------------------------------------ NULL is absence, not a value
+
+
+NULL_SEED = """
+DEFINE TABLE technical_assessment SCHEMALESS PERMISSIONS NONE;
+CREATE technical_assessment:a SET code = 'a', body_text = 'x', status = 'current';
+CREATE technical_assessment:b SET code = 'b', body_text = 'x', status = NULL;
+CREATE technical_assessment:c SET code = 'c', body_text = 'x';
+"""
+
+
+def introspector(database) -> Introspector:
+    return Introspector(URL, namespace=NS, database=database, user=USER, password=PASSWORD)
+
+
+async def test_field_presence_counts_null_as_absent(database):
+    """Three rows: one value, one explicit NULL, one missing field.
+
+    Counting the NULL as present reports coverage the data does not have — the
+    hard requirement ("less data is acceptable, wrong data is not") inverted
+    inside the instrument that is supposed to enforce it.
+    """
+    sql(database, NULL_SEED)
+    async with introspector(database) as tank_db:
+        assert await tank_db.field_presence("technical_assessment", "status") == (1, 3)
+
+
+async def test_sample_values_skips_null(database):
+    """A NULL reaching the sample becomes the literal string 'None' downstream."""
+    sql(database, NULL_SEED)
+    async with introspector(database) as tank_db:
+        values = await tank_db.sample_values("technical_assessment", "status")
+    assert values == ["current"]
+    assert None not in values
+
+
+async def test_null_does_not_masquerade_as_a_vocabulary_violation(database):
+    """The visible consequence of the two above.
+
+    ``sample_values`` handed ``None`` to ATTR-010, which stringified it and
+    reported ``'None'`` as a value outside the declared vocabulary: an
+    unobservable field rendered as a wrong one, which is the failure mode this
+    project exists to prevent.
+    """
+    sql(database, NULL_SEED)
+    ontology = Ontology(
+        types=[
+            UnitType(
+                "report",
+                table="technical_assessment",
+                text="body_text",
+                attrs=[Attr("status", "string", values=["current", "revoked"])],
+            )
+        ],
+    )
+    report = await check(ontology, database)
+    messages = " ".join(f.message for f in report.findings if f.code == "ATTR-010")
+    assert "None" not in messages
+    assert "WARN" not in statuses(report, "ATTR-010")

@@ -98,8 +98,14 @@ def parse_table_ddl(name: str, raw: str) -> TableDDL:
     return ddl
 
 
+# FLEXIBLE belongs in the lookahead like any other clause: SurrealDB accepts it
+# both before and after TYPE, and without it the postfix spelling
+# (`TYPE object FLEXIBLE`) is swallowed into the type itself and normalizes to
+# `objectflexible`, which matches no declared type — the field silently reads
+# as a mismatch instead of as an object.
 _FIELD_TYPE_RE = re.compile(
-    r"\bTYPE\s+(?P<type>.+?)(?=\s+(?:DEFAULT|VALUE|ASSERT|PERMISSIONS|READONLY|COMMENT|REFERENCE)\b|\s*$)"
+    r"\bTYPE\s+(?P<type>.+?)"
+    r"(?=\s+(?:DEFAULT|VALUE|ASSERT|PERMISSIONS|READONLY|COMMENT|REFERENCE|FLEXIBLE)\b|\s*$)"
 )
 
 

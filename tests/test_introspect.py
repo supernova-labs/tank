@@ -71,6 +71,14 @@ FIELD_CASES = [
         "string",
     ),
     ("DEFINE FIELD created ON t TYPE datetime DEFAULT time::now() PERMISSIONS FULL", "datetime"),
+    # FLEXIBLE is a clause, not part of the type — and SurrealDB accepts it on
+    # either side of TYPE. Swallowing the postfix spelling produced the type
+    # `objectflexible`, which matches nothing: the field read as a mismatch
+    # instead of as an object.
+    ("DEFINE FIELD meta ON t TYPE object FLEXIBLE PERMISSIONS FULL", "object"),
+    ("DEFINE FIELD meta ON t FLEXIBLE TYPE object PERMISSIONS FULL", "object"),
+    ("DEFINE FIELD meta ON t TYPE option<object> FLEXIBLE PERMISSIONS FULL", "none|object"),
+    ("DEFINE FIELD meta ON t TYPE none | object FLEXIBLE PERMISSIONS FULL", "none|object"),
 ]
 
 

@@ -1,0 +1,3 @@
+{"ts": 1789683738.4504, "run_id": "N1--no_nature--nointro--r1", "sql": "SELECT id FROM article WHERE body ~ 'quantum';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789683739.689449, "run_id": "N1--no_nature--nointro--r1", "sql": "SELECT id FROM factbox WHERE body ~ 'quantum';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 2}
+{"ts": 1789683741.007775, "run_id": "N1--no_nature--nointro--r1", "sql": "SELECT id FROM passage WHERE content ~ 'quantum';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}

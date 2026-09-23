@@ -1,0 +1,2 @@
+{"ts": 1789673951.957984, "run_id": "N1--no_locator--nointro--r1", "sql": "SELECT id FROM article WHERE string::contains(string::lowercase(body), 'quantum');", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789673953.231928, "run_id": "N1--no_locator--nointro--r1", "sql": "SELECT id FROM passage WHERE string::contains(string::lowercase(content), 'quantum');", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}

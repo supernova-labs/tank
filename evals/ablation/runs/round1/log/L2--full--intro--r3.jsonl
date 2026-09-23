@@ -1,0 +1,2 @@
+{"ts": 1789673704.172419, "run_id": "L2--full--intro--r3", "sql": "SELECT id, parent, order FROM passage WHERE parent.title = 'Climate accord signed' ORDER BY order LIMIT 1;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 1}
+{"ts": 1789673707.575634, "run_id": "L2--full--intro--r3", "sql": "SELECT * FROM passage WHERE parent.title = 'Climate accord signed';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 4}

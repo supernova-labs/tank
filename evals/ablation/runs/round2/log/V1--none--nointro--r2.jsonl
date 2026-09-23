@@ -1,0 +1,12 @@
+{"ts": 1789684119.780809, "run_id": "V1--none--nointro--r2", "sql": "SELECT id, status FROM article LIMIT 100;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 48}
+{"ts": 1789684124.030824, "run_id": "V1--none--nointro--r2", "sql": "SELECT * FROM article:a12;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 1}
+{"ts": 1789684128.046849, "run_id": "V1--none--nointro--r2", "sql": "SELECT * FROM topic LIMIT 50;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 4}
+{"ts": 1789684131.1295302, "run_id": "V1--none--nointro--r2", "sql": "SELECT * FROM covers LIMIT 20;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 9}
+{"ts": 1789684134.178935, "run_id": "V1--none--nointro--r2", "sql": "SELECT * FROM brief LIMIT 20;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 12}
+{"ts": 1789684137.146925, "run_id": "V1--none--nointro--r2", "sql": "SELECT * FROM factbox LIMIT 20;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 8}
+{"ts": 1789684137.233351, "run_id": "V1--none--nointro--r2", "sql": "SELECT * FROM passage LIMIT 20;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 10}
+{"ts": 1789684144.93443, "run_id": "V1--none--nointro--r2", "sql": "SELECT id, status, published_at FROM article WHERE status = 'c_11';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789684145.045127, "run_id": "V1--none--nointro--r2", "sql": "SELECT id, status, published_at FROM article WHERE status = 'c_04' LIMIT 5;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 5}
+{"ts": 1789684159.9385889, "run_id": "V1--none--nointro--r2", "sql": "SELECT * FROM article WHERE status = 'c_11' OR status = 'c_23';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 7}
+{"ts": 1789684171.906225, "run_id": "V1--none--nointro--r2", "sql": "SELECT id, status, killed_at, killed_by, editor, reason, updated_at, retracted, retracted_at FROM article WHERE status != 'c_04';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 7}
+{"ts": 1789684186.4139688, "run_id": "V1--none--nointro--r2", "sql": "SELECT id, title, body FROM article WHERE status = 'c_04' LIMIT 10;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 10}

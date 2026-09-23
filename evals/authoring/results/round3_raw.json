@@ -1,0 +1,481 @@
+[
+ {
+  "run_id": "T1--declarative--sonnet--r1",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--declarative--sonnet--r5",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--declarative--sonnet--r3",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--declarative--sonnet--r2",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--declarative--sonnet--r4",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--declarative--haiku--r1",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--typed--sonnet--r1",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--declarative--haiku--r3",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--declarative--haiku--r2",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--declarative--haiku--r4",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--declarative--haiku--r5",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--typed--sonnet--r2",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--typed--sonnet--r3",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--typed--sonnet--r5",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--typed--sonnet--r4",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--typed--haiku--r1",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--typed--haiku--r2",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--declarative--sonnet--r1",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--typed--haiku--r3",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--typed--haiku--r4",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--declarative--sonnet--r2",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--declarative--sonnet--r3",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--typed--haiku--r5",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--declarative--sonnet--r4",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--declarative--sonnet--r5",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--declarative--haiku--r2",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--declarative--haiku--r1",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "final_exact": true,
+  "run_id": "T2--typed--sonnet--r1",
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--declarative--haiku--r3",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--declarative--haiku--r5",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--declarative--haiku--r4",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--typed--sonnet--r2",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--typed--sonnet--r3",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--typed--sonnet--r4",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--typed--sonnet--r5",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--typed--haiku--r1",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--typed--haiku--r2",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--declarative--sonnet--r1",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--declarative--sonnet--r2",
+  "final_exact": true,
+  "submissions_used": 1
+ },
+ {
+  "run_id": "T2--typed--haiku--r5",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--typed--haiku--r4",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--declarative--sonnet--r3",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--declarative--sonnet--r4",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--typed--haiku--r3",
+  "final_exact": true,
+  "submissions_used": 2,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--declarative--sonnet--r5",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--declarative--haiku--r1",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--declarative--haiku--r2",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--declarative--haiku--r3",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--declarative--haiku--r4",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--typed--sonnet--r1",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--declarative--haiku--r5",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--typed--sonnet--r2",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--typed--sonnet--r5",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--typed--sonnet--r4",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--typed--sonnet--r3",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--declarative--sonnet--r1",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--declarative--sonnet--r2",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--typed--haiku--r1",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--typed--haiku--r3",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--declarative--sonnet--r3",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--declarative--sonnet--r4",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--typed--haiku--r4",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--typed--haiku--r2",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--declarative--sonnet--r5",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--declarative--haiku--r1",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--declarative--haiku--r3",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--declarative--haiku--r4",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--typed--haiku--r5",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--declarative--haiku--r5",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--declarative--haiku--r2",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--typed--sonnet--r1",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "final_exact": true,
+  "run_id": "T4--typed--sonnet--r2",
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--typed--sonnet--r3",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--typed--sonnet--r4",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--typed--sonnet--r5",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--typed--haiku--r1",
+  "final_exact": true,
+  "submissions_used": 2,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--typed--haiku--r3",
+  "final_exact": true,
+  "submissions_used": 2,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--typed--haiku--r2",
+  "final_exact": true,
+  "submissions_used": 3,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--typed--haiku--r5",
+  "final_exact": true,
+  "submissions_used": 2,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--typed--haiku--r4",
+  "final_exact": true,
+  "submissions_used": 2,
+  "gave_up": false
+ }
+]

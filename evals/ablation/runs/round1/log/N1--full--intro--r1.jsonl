@@ -1,0 +1,3 @@
+{"ts": 1789673716.949257, "run_id": "N1--full--intro--r1", "sql": "SELECT id FROM article WHERE body CONTAINS 'quantum' OR string::contains(body,'quantum');", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789673720.884827, "run_id": "N1--full--intro--r1", "sql": "SELECT id FROM passage WHERE string::contains(content,'quantum');", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789673723.863404, "run_id": "N1--full--intro--r1", "sql": "SELECT id FROM passage WHERE string::contains(string::lowercase(content),'quantum');", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}

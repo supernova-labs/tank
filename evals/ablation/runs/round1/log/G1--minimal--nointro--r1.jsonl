@@ -1,0 +1,2 @@
+{"ts": 1789674220.182276, "run_id": "G1--minimal--nointro--r1", "sql": "SELECT * FROM article LIMIT 3;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789674223.222369, "run_id": "G1--minimal--nointro--r1", "sql": "SELECT count() FROM article WHERE desk = 'Science' GROUP ALL;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 1}

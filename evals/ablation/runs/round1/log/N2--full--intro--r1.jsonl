@@ -1,0 +1,1 @@
+{"ts": 1789673717.067195, "run_id": "N2--full--intro--r1", "sql": "SELECT id, text FROM brief WHERE string::contains(string::lowercase(text), 'climate');", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 2}

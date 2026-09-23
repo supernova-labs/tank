@@ -1,0 +1,3 @@
+{"ts": 1789675264.569889, "run_id": "N1--no_values--nointro--r3", "sql": "SELECT id FROM article WHERE string::contains(string::lowercase(body), 'quantum');", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789675265.967386, "run_id": "N1--no_values--nointro--r3", "sql": "SELECT id FROM passage WHERE string::contains(string::lowercase(content), 'quantum');", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789675267.4273999, "run_id": "N1--no_values--nointro--r3", "sql": "SELECT id FROM factbox WHERE string::contains(string::lowercase(body), 'quantum');", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 2}

@@ -1,0 +1,2 @@
+{"ts": 1789673859.826476, "run_id": "N1--no_values--nointro--r2", "sql": "SELECT id FROM article WHERE body CONTAINS 'quantum';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789673861.177603, "run_id": "N1--no_values--nointro--r2", "sql": "SELECT id FROM passage WHERE content CONTAINS 'quantum';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}

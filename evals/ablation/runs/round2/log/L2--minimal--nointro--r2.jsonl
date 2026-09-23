@@ -1,0 +1,4 @@
+{"ts": 1789683956.239101, "run_id": "L2--minimal--nointro--r2", "sql": "SELECT id, title FROM article WHERE title = 'Accord after marathon talks'", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 1}
+{"ts": 1789683959.348913, "run_id": "L2--minimal--nointro--r2", "sql": "SELECT * FROM passage WHERE article = article:a6 ORDER BY order LIMIT 5", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789683962.109389, "run_id": "L2--minimal--nointro--r2", "sql": "SELECT * FROM passage LIMIT 3", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789683965.1816268, "run_id": "L2--minimal--nointro--r2", "sql": "SELECT id, seq FROM passage WHERE parent = article:a6 ORDER BY seq LIMIT 5", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 5}

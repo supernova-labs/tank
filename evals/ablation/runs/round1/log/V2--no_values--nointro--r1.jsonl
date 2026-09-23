@@ -1,0 +1,2 @@
+{"ts": 1789673835.981143, "run_id": "V2--no_values--nointro--r1", "sql": "SELECT id, kind FROM brief;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 6}
+{"ts": 1789673839.1376529, "run_id": "V2--no_values--nointro--r1", "sql": "SELECT id, kind, text FROM brief WHERE kind = 'chk';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 2}

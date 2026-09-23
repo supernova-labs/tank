@@ -1,0 +1,4 @@
+{"ts": 1789675211.3502269, "run_id": "V2--no_values--nointro--r1", "sql": "SELECT id, kind FROM brief;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 12}
+{"ts": 1789675215.662316, "run_id": "V2--no_values--nointro--r1", "sql": "SELECT id, kind, text FROM brief LIMIT 3;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789675218.732377, "run_id": "V2--no_values--nointro--r1", "sql": "SELECT id, kind, text FROM brief WHERE kind = 't3';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789675221.9806669, "run_id": "V2--no_values--nointro--r1", "sql": "SELECT id, kind, text FROM brief WHERE kind != 't3';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 9}

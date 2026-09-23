@@ -1,0 +1,3 @@
+{"ts": 1789674171.58287, "run_id": "V2--minimal--nointro--r1", "sql": "SELECT * FROM topic LIMIT 50", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789674176.598495, "run_id": "V2--minimal--nointro--r1", "sql": "SELECT * FROM brief LIMIT 50", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 6}
+{"ts": 1789674181.378838, "run_id": "V2--minimal--nointro--r1", "sql": "SELECT id, kind, content FROM passage LIMIT 50", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 8}

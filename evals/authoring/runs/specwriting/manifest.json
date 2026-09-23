@@ -1,0 +1,290 @@
+[
+  {
+    "brief_id": "T1--free--w1",
+    "task": 1,
+    "style": "free",
+    "writer": 1,
+    "arms": [
+      {
+        "run_id": "T1--free--w1--declarative",
+        "arm": "declarative"
+      },
+      {
+        "run_id": "T1--free--w1--typed",
+        "arm": "typed"
+      }
+    ]
+  },
+  {
+    "brief_id": "T1--free--w2",
+    "task": 1,
+    "style": "free",
+    "writer": 2,
+    "arms": [
+      {
+        "run_id": "T1--free--w2--declarative",
+        "arm": "declarative"
+      },
+      {
+        "run_id": "T1--free--w2--typed",
+        "arm": "typed"
+      }
+    ]
+  },
+  {
+    "brief_id": "T1--free--w3",
+    "task": 1,
+    "style": "free",
+    "writer": 3,
+    "arms": [
+      {
+        "run_id": "T1--free--w3--declarative",
+        "arm": "declarative"
+      },
+      {
+        "run_id": "T1--free--w3--typed",
+        "arm": "typed"
+      }
+    ]
+  },
+  {
+    "brief_id": "T1--template--w1",
+    "task": 1,
+    "style": "template",
+    "writer": 1,
+    "arms": [
+      {
+        "run_id": "T1--template--w1--declarative",
+        "arm": "declarative"
+      },
+      {
+        "run_id": "T1--template--w1--typed",
+        "arm": "typed"
+      }
+    ]
+  },
+  {
+    "brief_id": "T1--template--w2",
+    "task": 1,
+    "style": "template",
+    "writer": 2,
+    "arms": [
+      {
+        "run_id": "T1--template--w2--declarative",
+        "arm": "declarative"
+      },
+      {
+        "run_id": "T1--template--w2--typed",
+        "arm": "typed"
+      }
+    ]
+  },
+  {
+    "brief_id": "T1--template--w3",
+    "task": 1,
+    "style": "template",
+    "writer": 3,
+    "arms": [
+      {
+        "run_id": "T1--template--w3--declarative",
+        "arm": "declarative"
+      },
+      {
+        "run_id": "T1--template--w3--typed",
+        "arm": "typed"
+      }
+    ]
+  },
+  {
+    "brief_id": "T2--free--w1",
+    "task": 2,
+    "style": "free",
+    "writer": 1,
+    "arms": [
+      {
+        "run_id": "T2--free--w1--declarative",
+        "arm": "declarative"
+      },
+      {
+        "run_id": "T2--free--w1--typed",
+        "arm": "typed"
+      }
+    ]
+  },
+  {
+    "brief_id": "T2--free--w2",
+    "task": 2,
+    "style": "free",
+    "writer": 2,
+    "arms": [
+      {
+        "run_id": "T2--free--w2--declarative",
+        "arm": "declarative"
+      },
+      {
+        "run_id": "T2--free--w2--typed",
+        "arm": "typed"
+      }
+    ]
+  },
+  {
+    "brief_id": "T2--free--w3",
+    "task": 2,
+    "style": "free",
+    "writer": 3,
+    "arms": [
+      {
+        "run_id": "T2--free--w3--declarative",
+        "arm": "declarative"
+      },
+      {
+        "run_id": "T2--free--w3--typed",
+        "arm": "typed"
+      }
+    ]
+  },
+  {
+    "brief_id": "T2--template--w1",
+    "task": 2,
+    "style": "template",
+    "writer": 1,
+    "arms": [
+      {
+        "run_id": "T2--template--w1--declarative",
+        "arm": "declarative"
+      },
+      {
+        "run_id": "T2--template--w1--typed",
+        "arm": "typed"
+      }
+    ]
+  },
+  {
+    "brief_id": "T2--template--w2",
+    "task": 2,
+    "style": "template",
+    "writer": 2,
+    "arms": [
+      {
+        "run_id": "T2--template--w2--declarative",
+        "arm": "declarative"
+      },
+      {
+        "run_id": "T2--template--w2--typed",
+        "arm": "typed"
+      }
+    ]
+  },
+  {
+    "brief_id": "T2--template--w3",
+    "task": 2,
+    "style": "template",
+    "writer": 3,
+    "arms": [
+      {
+        "run_id": "T2--template--w3--declarative",
+        "arm": "declarative"
+      },
+      {
+        "run_id": "T2--template--w3--typed",
+        "arm": "typed"
+      }
+    ]
+  },
+  {
+    "brief_id": "T3--free--w1",
+    "task": 3,
+    "style": "free",
+    "writer": 1,
+    "arms": [
+      {
+        "run_id": "T3--free--w1--declarative",
+        "arm": "declarative"
+      },
+      {
+        "run_id": "T3--free--w1--typed",
+        "arm": "typed"
+      }
+    ]
+  },
+  {
+    "brief_id": "T3--free--w2",
+    "task": 3,
+    "style": "free",
+    "writer": 2,
+    "arms": [
+      {
+        "run_id": "T3--free--w2--declarative",
+        "arm": "declarative"
+      },
+      {
+        "run_id": "T3--free--w2--typed",
+        "arm": "typed"
+      }
+    ]
+  },
+  {
+    "brief_id": "T3--free--w3",
+    "task": 3,
+    "style": "free",
+    "writer": 3,
+    "arms": [
+      {
+        "run_id": "T3--free--w3--declarative",
+        "arm": "declarative"
+      },
+      {
+        "run_id": "T3--free--w3--typed",
+        "arm": "typed"
+      }
+    ]
+  },
+  {
+    "brief_id": "T3--template--w1",
+    "task": 3,
+    "style": "template",
+    "writer": 1,
+    "arms": [
+      {
+        "run_id": "T3--template--w1--declarative",
+        "arm": "declarative"
+      },
+      {
+        "run_id": "T3--template--w1--typed",
+        "arm": "typed"
+      }
+    ]
+  },
+  {
+    "brief_id": "T3--template--w2",
+    "task": 3,
+    "style": "template",
+    "writer": 2,
+    "arms": [
+      {
+        "run_id": "T3--template--w2--declarative",
+        "arm": "declarative"
+      },
+      {
+        "run_id": "T3--template--w2--typed",
+        "arm": "typed"
+      }
+    ]
+  },
+  {
+    "brief_id": "T3--template--w3",
+    "task": 3,
+    "style": "template",
+    "writer": 3,
+    "arms": [
+      {
+        "run_id": "T3--template--w3--declarative",
+        "arm": "declarative"
+      },
+      {
+        "run_id": "T3--template--w3--typed",
+        "arm": "typed"
+      }
+    ]
+  }
+]

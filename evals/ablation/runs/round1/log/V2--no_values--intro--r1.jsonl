@@ -1,0 +1,1 @@
+{"ts": 1789673792.374232, "run_id": "V2--no_values--intro--r1", "sql": "SELECT id, kind FROM brief;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 6}

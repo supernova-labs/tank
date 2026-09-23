@@ -1,0 +1,8 @@
+{"ts": 1789675127.388602, "run_id": "V1--no_values--intro--r1", "sql": "SELECT status, count() FROM article GROUP BY status;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789675130.913543, "run_id": "V1--no_values--intro--r1", "sql": "SELECT kind, count() FROM brief GROUP BY kind;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789675136.0824451, "run_id": "V1--no_values--intro--r1", "sql": "SELECT id, kind, text, article FROM brief LIMIT 15;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 12}
+{"ts": 1789675139.840589, "run_id": "V1--no_values--intro--r1", "sql": "SELECT id, title, status, desk FROM article WHERE status = 'c_23' OR status = 'c_11';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 7}
+{"ts": 1789675143.975971, "run_id": "V1--no_values--intro--r1", "sql": "INFO FOR DB;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789675148.057106, "run_id": "V1--no_values--intro--r1", "sql": "INFO FOR TABLE article;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789675152.936376, "run_id": "V1--no_values--intro--r1", "sql": "SELECT id, status, string::slice(body,0,200) AS snippet FROM article WHERE status = 'c_11' OR status = 'c_23';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 7}
+{"ts": 1789675157.959682, "run_id": "V1--no_values--intro--r1", "sql": "SELECT id, status, published_at FROM article ORDER BY status, published_at;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 48}

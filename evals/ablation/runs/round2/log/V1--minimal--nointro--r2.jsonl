@@ -1,0 +1,8 @@
+{"ts": 1789683907.8612092, "run_id": "V1--minimal--nointro--r2", "sql": "SELECT * FROM article LIMIT 3;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789683910.989992, "run_id": "V1--minimal--nointro--r2", "sql": "SELECT status, count() FROM article GROUP BY status;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789683914.129693, "run_id": "V1--minimal--nointro--r2", "sql": "SELECT * FROM code LIMIT 50;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789683919.307063, "run_id": "V1--minimal--nointro--r2", "sql": "SELECT * FROM status_code LIMIT 50; SELECT * FROM workflow_status LIMIT 50; SELECT * FROM status LIMIT 50;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789683924.978272, "run_id": "V1--minimal--nointro--r2", "sql": "SELECT * FROM event LIMIT 20; SELECT * FROM audit_log LIMIT 20; SELECT * FROM editorial_action LIMIT 20;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789683929.9887419, "run_id": "V1--minimal--nointro--r2", "sql": "SELECT * FROM article WHERE status != 'c_04';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 7}
+{"ts": 1789683937.811527, "run_id": "V1--minimal--nointro--r2", "sql": "SELECT * FROM revision LIMIT 20; SELECT * FROM note LIMIT 20; SELECT * FROM status_history LIMIT 20; SELECT * FROM article_status LIMIT 20;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789683946.36631, "run_id": "V1--minimal--nointro--r2", "sql": "SELECT * FROM topic LIMIT 30;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 4}

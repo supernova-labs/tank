@@ -1,0 +1,1 @@
+{"ts": 1789674227.727254, "run_id": "G1--minimal--nointro--r3", "sql": "SELECT count() FROM article WHERE desk = 'Science' GROUP ALL;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 1}

@@ -1,0 +1,3 @@
+{"ts": 1789675569.746512, "run_id": "V2--no_nature--nointro--r1", "sql": "SELECT id, kind, text FROM brief LIMIT 30", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 12}
+{"ts": 1789675573.279019, "run_id": "V2--no_nature--nointro--r1", "sql": "SELECT count() FROM brief GROUP ALL", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 1}
+{"ts": 1789683698.958418, "run_id": "V2--no_nature--nointro--r1", "sql": "SELECT id, kind, text FROM brief LIMIT 50", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 12}

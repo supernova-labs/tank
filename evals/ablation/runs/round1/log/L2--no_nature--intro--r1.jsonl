@@ -1,0 +1,2 @@
+{"ts": 1789673999.511337, "run_id": "L2--no_nature--intro--r1", "sql": "INFO FOR TABLE passage;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789674002.61871, "run_id": "L2--no_nature--intro--r1", "sql": "SELECT id, take FROM passage WHERE parent = (SELECT VALUE id FROM article WHERE title = 'Climate accord signed')[0] ORDER BY take LIMIT 1;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 1}

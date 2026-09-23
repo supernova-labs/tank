@@ -1,0 +1,1 @@
+{"ts": 1789675279.337547, "run_id": "N2--no_values--nointro--r3", "sql": "SELECT id, text FROM brief WHERE text ~ 'climate'", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}

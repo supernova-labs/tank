@@ -1,0 +1,11 @@
+{"ts": 1789684002.823061, "run_id": "V1--none--intro--r2", "sql": "INFO FOR TABLE article;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789684005.99662, "run_id": "V1--none--intro--r2", "sql": "INFO FOR DB;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789684009.062124, "run_id": "V1--none--intro--r2", "sql": "SELECT id, status, published_at, title FROM article ORDER BY status;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 48}
+{"ts": 1789684012.378926, "run_id": "V1--none--intro--r2", "sql": "SELECT status, count() FROM article GROUP BY status;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789684015.1829891, "run_id": "V1--none--intro--r2", "sql": "SELECT id, status, title, body, published_at FROM article WHERE status = 'c_11' OR status = 'c_23';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 7}
+{"ts": 1789684019.6716568, "run_id": "V1--none--intro--r2", "sql": "INFO FOR TABLE brief; ", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789684019.776156, "run_id": "V1--none--intro--r2", "sql": "INFO FOR TABLE factbox;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789684024.224579, "run_id": "V1--none--intro--r2", "sql": "SELECT article, kind, text FROM brief WHERE article IN [article:a12, article:a19, article:a28, article:a33, article:a41, article:a5, article:a7];", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789684028.710071, "run_id": "V1--none--intro--r2", "sql": "SELECT id, article, kind, text FROM brief WHERE text CONTAINS 'kill' OR text CONTAINS 'pull' OR text CONTAINS 'spike';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789684031.875656, "run_id": "V1--none--intro--r2", "sql": "INFO FOR TABLE passage;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789684039.531627, "run_id": "V1--none--intro--r2", "sql": "SELECT parent, seq, cut, content FROM passage WHERE parent IN [article:a12, article:a19, article:a28, article:a33, article:a41, article:a5, article:a7] ORDER BY parent, seq;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}

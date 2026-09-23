@@ -1,0 +1,10 @@
+{"ts": 1789675478.301418, "run_id": "V1--no_nature--intro--r3", "sql": "SELECT id, title, status, desk FROM article;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 48}
+{"ts": 1789675482.442176, "run_id": "V1--no_nature--intro--r3", "sql": "SELECT id, article, kind, text FROM brief;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 12}
+{"ts": 1789675486.034289, "run_id": "V1--no_nature--intro--r3", "sql": "INFO FOR TABLE article;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789675490.031955, "run_id": "V1--no_nature--intro--r3", "sql": "SELECT id, status, body FROM article WHERE status IN ['c_11','c_23'];", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 7}
+{"ts": 1789675495.589656, "run_id": "V1--no_nature--intro--r3", "sql": "SELECT parent, count() FROM passage GROUP BY parent;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 2}
+{"ts": 1789675495.677415, "run_id": "V1--no_nature--intro--r3", "sql": "SELECT in, out FROM covers WHERE in IN [article:a12, article:a19, article:a28, article:a33, article:a41, article:a5, article:a7];", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 1}
+{"ts": 1789675501.460886, "run_id": "V1--no_nature--intro--r3", "sql": "SELECT in, out FROM covers;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 9}
+{"ts": 1789675508.4964008, "run_id": "V1--no_nature--intro--r3", "sql": "SELECT * FROM factbox;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 8}
+{"ts": 1789675522.540425, "run_id": "V1--no_nature--intro--r3", "sql": "SELECT id, status, published_at FROM article ORDER BY status, id;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 48}
+{"ts": 1789675532.994729, "run_id": "V1--no_nature--intro--r3", "sql": "INFO FOR DB;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}

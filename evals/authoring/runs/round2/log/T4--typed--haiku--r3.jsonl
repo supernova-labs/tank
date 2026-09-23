@@ -1,0 +1,2 @@
+{"ts": 1789743000.878842, "run_id": "T4--typed--haiku--r3", "arm": "typed", "task": 4, "constructs": true, "arm_ok": true, "exact": false, "diff_count": 4, "diffs": ["missing: types[1].fulltext (expected None)", "unexpected: types[1].fulltext.analyzer = None", "unexpected: types[1].fulltext.field = 'answer'", "unexpected: types[1].fulltext.language = None"]}
+{"ts": 1789743034.01363, "run_id": "T4--typed--haiku--r3", "arm": "typed", "task": 4, "constructs": true, "arm_ok": true, "exact": true, "diff_count": 0}

@@ -1,0 +1,7 @@
+{"ts": 1789674347.117356, "run_id": "N1--none--nointro--r2", "sql": "SELECT * FROM article LIMIT 3", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789674350.429593, "run_id": "N1--none--nointro--r2", "sql": "SELECT * FROM brief LIMIT 3", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789674353.852154, "run_id": "N1--none--nointro--r2", "sql": "SELECT * FROM passage LIMIT 5", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 5}
+{"ts": 1789674359.6781209, "run_id": "N1--none--nointro--r2", "sql": "SELECT * FROM topic LIMIT 3", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789674359.773173, "run_id": "N1--none--nointro--r2", "sql": "SELECT * FROM covers LIMIT 3", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789674366.991332, "run_id": "N1--none--nointro--r2", "sql": "SELECT id, title, body FROM article WHERE body CONTAINS 'quantum' OR title CONTAINS 'quantum' OR body CONTAINS 'Quantum' OR title CONTAINS 'Quantum'", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789674372.323126, "run_id": "N1--none--nointro--r2", "sql": "SELECT id FROM article WHERE string::lowercase(body) CONTAINS 'quantum' OR string::lowercase(title) CONTAINS 'quantum'", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}

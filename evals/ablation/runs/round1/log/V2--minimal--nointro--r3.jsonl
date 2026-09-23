@@ -1,0 +1,1 @@
+{"ts": 1789674176.88661, "run_id": "V2--minimal--nointro--r3", "sql": "SELECT id, type, title, text FROM brief LIMIT 20", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 6}

@@ -1,0 +1,1 @@
+{"ts": 1789675560.792174, "run_id": "G2--no_nature--intro--r3", "sql": "SELECT id, ->covers->topic AS topics FROM article WHERE title = 'Election maps redrawn';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 1}

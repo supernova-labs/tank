@@ -1,0 +1,5 @@
+{"ts": 1789683796.2430341, "run_id": "V2--minimal--intro--r2", "sql": "INFO FOR DB;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789683799.486964, "run_id": "V2--minimal--intro--r2", "sql": "INFO FOR TABLE factbox;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789683802.931208, "run_id": "V2--minimal--intro--r2", "sql": "SELECT id, heading FROM factbox;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 8}
+{"ts": 1789683807.309589, "run_id": "V2--minimal--intro--r2", "sql": "INFO FOR TABLE passage; INFO FOR TABLE brief; INFO FOR TABLE article;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789683810.5848892, "run_id": "V2--minimal--intro--r2", "sql": "SELECT id, kind, text FROM brief;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 12}

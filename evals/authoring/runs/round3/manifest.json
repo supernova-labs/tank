@@ -1,0 +1,642 @@
+[
+  {
+    "run_id": "T1--declarative--sonnet--r1",
+    "task": 1,
+    "arm": "declarative",
+    "model": "sonnet",
+    "rep": 1,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T1--declarative--sonnet--r1.md"
+  },
+  {
+    "run_id": "T1--declarative--sonnet--r2",
+    "task": 1,
+    "arm": "declarative",
+    "model": "sonnet",
+    "rep": 2,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T1--declarative--sonnet--r2.md"
+  },
+  {
+    "run_id": "T1--declarative--sonnet--r3",
+    "task": 1,
+    "arm": "declarative",
+    "model": "sonnet",
+    "rep": 3,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T1--declarative--sonnet--r3.md"
+  },
+  {
+    "run_id": "T1--declarative--sonnet--r4",
+    "task": 1,
+    "arm": "declarative",
+    "model": "sonnet",
+    "rep": 4,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T1--declarative--sonnet--r4.md"
+  },
+  {
+    "run_id": "T1--declarative--sonnet--r5",
+    "task": 1,
+    "arm": "declarative",
+    "model": "sonnet",
+    "rep": 5,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T1--declarative--sonnet--r5.md"
+  },
+  {
+    "run_id": "T1--declarative--haiku--r1",
+    "task": 1,
+    "arm": "declarative",
+    "model": "haiku",
+    "rep": 1,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T1--declarative--haiku--r1.md"
+  },
+  {
+    "run_id": "T1--declarative--haiku--r2",
+    "task": 1,
+    "arm": "declarative",
+    "model": "haiku",
+    "rep": 2,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T1--declarative--haiku--r2.md"
+  },
+  {
+    "run_id": "T1--declarative--haiku--r3",
+    "task": 1,
+    "arm": "declarative",
+    "model": "haiku",
+    "rep": 3,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T1--declarative--haiku--r3.md"
+  },
+  {
+    "run_id": "T1--declarative--haiku--r4",
+    "task": 1,
+    "arm": "declarative",
+    "model": "haiku",
+    "rep": 4,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T1--declarative--haiku--r4.md"
+  },
+  {
+    "run_id": "T1--declarative--haiku--r5",
+    "task": 1,
+    "arm": "declarative",
+    "model": "haiku",
+    "rep": 5,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T1--declarative--haiku--r5.md"
+  },
+  {
+    "run_id": "T1--typed--sonnet--r1",
+    "task": 1,
+    "arm": "typed",
+    "model": "sonnet",
+    "rep": 1,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T1--typed--sonnet--r1.md"
+  },
+  {
+    "run_id": "T1--typed--sonnet--r2",
+    "task": 1,
+    "arm": "typed",
+    "model": "sonnet",
+    "rep": 2,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T1--typed--sonnet--r2.md"
+  },
+  {
+    "run_id": "T1--typed--sonnet--r3",
+    "task": 1,
+    "arm": "typed",
+    "model": "sonnet",
+    "rep": 3,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T1--typed--sonnet--r3.md"
+  },
+  {
+    "run_id": "T1--typed--sonnet--r4",
+    "task": 1,
+    "arm": "typed",
+    "model": "sonnet",
+    "rep": 4,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T1--typed--sonnet--r4.md"
+  },
+  {
+    "run_id": "T1--typed--sonnet--r5",
+    "task": 1,
+    "arm": "typed",
+    "model": "sonnet",
+    "rep": 5,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T1--typed--sonnet--r5.md"
+  },
+  {
+    "run_id": "T1--typed--haiku--r1",
+    "task": 1,
+    "arm": "typed",
+    "model": "haiku",
+    "rep": 1,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T1--typed--haiku--r1.md"
+  },
+  {
+    "run_id": "T1--typed--haiku--r2",
+    "task": 1,
+    "arm": "typed",
+    "model": "haiku",
+    "rep": 2,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T1--typed--haiku--r2.md"
+  },
+  {
+    "run_id": "T1--typed--haiku--r3",
+    "task": 1,
+    "arm": "typed",
+    "model": "haiku",
+    "rep": 3,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T1--typed--haiku--r3.md"
+  },
+  {
+    "run_id": "T1--typed--haiku--r4",
+    "task": 1,
+    "arm": "typed",
+    "model": "haiku",
+    "rep": 4,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T1--typed--haiku--r4.md"
+  },
+  {
+    "run_id": "T1--typed--haiku--r5",
+    "task": 1,
+    "arm": "typed",
+    "model": "haiku",
+    "rep": 5,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T1--typed--haiku--r5.md"
+  },
+  {
+    "run_id": "T2--declarative--sonnet--r1",
+    "task": 2,
+    "arm": "declarative",
+    "model": "sonnet",
+    "rep": 1,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T2--declarative--sonnet--r1.md"
+  },
+  {
+    "run_id": "T2--declarative--sonnet--r2",
+    "task": 2,
+    "arm": "declarative",
+    "model": "sonnet",
+    "rep": 2,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T2--declarative--sonnet--r2.md"
+  },
+  {
+    "run_id": "T2--declarative--sonnet--r3",
+    "task": 2,
+    "arm": "declarative",
+    "model": "sonnet",
+    "rep": 3,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T2--declarative--sonnet--r3.md"
+  },
+  {
+    "run_id": "T2--declarative--sonnet--r4",
+    "task": 2,
+    "arm": "declarative",
+    "model": "sonnet",
+    "rep": 4,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T2--declarative--sonnet--r4.md"
+  },
+  {
+    "run_id": "T2--declarative--sonnet--r5",
+    "task": 2,
+    "arm": "declarative",
+    "model": "sonnet",
+    "rep": 5,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T2--declarative--sonnet--r5.md"
+  },
+  {
+    "run_id": "T2--declarative--haiku--r1",
+    "task": 2,
+    "arm": "declarative",
+    "model": "haiku",
+    "rep": 1,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T2--declarative--haiku--r1.md"
+  },
+  {
+    "run_id": "T2--declarative--haiku--r2",
+    "task": 2,
+    "arm": "declarative",
+    "model": "haiku",
+    "rep": 2,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T2--declarative--haiku--r2.md"
+  },
+  {
+    "run_id": "T2--declarative--haiku--r3",
+    "task": 2,
+    "arm": "declarative",
+    "model": "haiku",
+    "rep": 3,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T2--declarative--haiku--r3.md"
+  },
+  {
+    "run_id": "T2--declarative--haiku--r4",
+    "task": 2,
+    "arm": "declarative",
+    "model": "haiku",
+    "rep": 4,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T2--declarative--haiku--r4.md"
+  },
+  {
+    "run_id": "T2--declarative--haiku--r5",
+    "task": 2,
+    "arm": "declarative",
+    "model": "haiku",
+    "rep": 5,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T2--declarative--haiku--r5.md"
+  },
+  {
+    "run_id": "T2--typed--sonnet--r1",
+    "task": 2,
+    "arm": "typed",
+    "model": "sonnet",
+    "rep": 1,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T2--typed--sonnet--r1.md"
+  },
+  {
+    "run_id": "T2--typed--sonnet--r2",
+    "task": 2,
+    "arm": "typed",
+    "model": "sonnet",
+    "rep": 2,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T2--typed--sonnet--r2.md"
+  },
+  {
+    "run_id": "T2--typed--sonnet--r3",
+    "task": 2,
+    "arm": "typed",
+    "model": "sonnet",
+    "rep": 3,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T2--typed--sonnet--r3.md"
+  },
+  {
+    "run_id": "T2--typed--sonnet--r4",
+    "task": 2,
+    "arm": "typed",
+    "model": "sonnet",
+    "rep": 4,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T2--typed--sonnet--r4.md"
+  },
+  {
+    "run_id": "T2--typed--sonnet--r5",
+    "task": 2,
+    "arm": "typed",
+    "model": "sonnet",
+    "rep": 5,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T2--typed--sonnet--r5.md"
+  },
+  {
+    "run_id": "T2--typed--haiku--r1",
+    "task": 2,
+    "arm": "typed",
+    "model": "haiku",
+    "rep": 1,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T2--typed--haiku--r1.md"
+  },
+  {
+    "run_id": "T2--typed--haiku--r2",
+    "task": 2,
+    "arm": "typed",
+    "model": "haiku",
+    "rep": 2,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T2--typed--haiku--r2.md"
+  },
+  {
+    "run_id": "T2--typed--haiku--r3",
+    "task": 2,
+    "arm": "typed",
+    "model": "haiku",
+    "rep": 3,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T2--typed--haiku--r3.md"
+  },
+  {
+    "run_id": "T2--typed--haiku--r4",
+    "task": 2,
+    "arm": "typed",
+    "model": "haiku",
+    "rep": 4,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T2--typed--haiku--r4.md"
+  },
+  {
+    "run_id": "T2--typed--haiku--r5",
+    "task": 2,
+    "arm": "typed",
+    "model": "haiku",
+    "rep": 5,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T2--typed--haiku--r5.md"
+  },
+  {
+    "run_id": "T3--declarative--sonnet--r1",
+    "task": 3,
+    "arm": "declarative",
+    "model": "sonnet",
+    "rep": 1,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T3--declarative--sonnet--r1.md"
+  },
+  {
+    "run_id": "T3--declarative--sonnet--r2",
+    "task": 3,
+    "arm": "declarative",
+    "model": "sonnet",
+    "rep": 2,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T3--declarative--sonnet--r2.md"
+  },
+  {
+    "run_id": "T3--declarative--sonnet--r3",
+    "task": 3,
+    "arm": "declarative",
+    "model": "sonnet",
+    "rep": 3,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T3--declarative--sonnet--r3.md"
+  },
+  {
+    "run_id": "T3--declarative--sonnet--r4",
+    "task": 3,
+    "arm": "declarative",
+    "model": "sonnet",
+    "rep": 4,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T3--declarative--sonnet--r4.md"
+  },
+  {
+    "run_id": "T3--declarative--sonnet--r5",
+    "task": 3,
+    "arm": "declarative",
+    "model": "sonnet",
+    "rep": 5,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T3--declarative--sonnet--r5.md"
+  },
+  {
+    "run_id": "T3--declarative--haiku--r1",
+    "task": 3,
+    "arm": "declarative",
+    "model": "haiku",
+    "rep": 1,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T3--declarative--haiku--r1.md"
+  },
+  {
+    "run_id": "T3--declarative--haiku--r2",
+    "task": 3,
+    "arm": "declarative",
+    "model": "haiku",
+    "rep": 2,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T3--declarative--haiku--r2.md"
+  },
+  {
+    "run_id": "T3--declarative--haiku--r3",
+    "task": 3,
+    "arm": "declarative",
+    "model": "haiku",
+    "rep": 3,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T3--declarative--haiku--r3.md"
+  },
+  {
+    "run_id": "T3--declarative--haiku--r4",
+    "task": 3,
+    "arm": "declarative",
+    "model": "haiku",
+    "rep": 4,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T3--declarative--haiku--r4.md"
+  },
+  {
+    "run_id": "T3--declarative--haiku--r5",
+    "task": 3,
+    "arm": "declarative",
+    "model": "haiku",
+    "rep": 5,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T3--declarative--haiku--r5.md"
+  },
+  {
+    "run_id": "T3--typed--sonnet--r1",
+    "task": 3,
+    "arm": "typed",
+    "model": "sonnet",
+    "rep": 1,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T3--typed--sonnet--r1.md"
+  },
+  {
+    "run_id": "T3--typed--sonnet--r2",
+    "task": 3,
+    "arm": "typed",
+    "model": "sonnet",
+    "rep": 2,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T3--typed--sonnet--r2.md"
+  },
+  {
+    "run_id": "T3--typed--sonnet--r3",
+    "task": 3,
+    "arm": "typed",
+    "model": "sonnet",
+    "rep": 3,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T3--typed--sonnet--r3.md"
+  },
+  {
+    "run_id": "T3--typed--sonnet--r4",
+    "task": 3,
+    "arm": "typed",
+    "model": "sonnet",
+    "rep": 4,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T3--typed--sonnet--r4.md"
+  },
+  {
+    "run_id": "T3--typed--sonnet--r5",
+    "task": 3,
+    "arm": "typed",
+    "model": "sonnet",
+    "rep": 5,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T3--typed--sonnet--r5.md"
+  },
+  {
+    "run_id": "T3--typed--haiku--r1",
+    "task": 3,
+    "arm": "typed",
+    "model": "haiku",
+    "rep": 1,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T3--typed--haiku--r1.md"
+  },
+  {
+    "run_id": "T3--typed--haiku--r2",
+    "task": 3,
+    "arm": "typed",
+    "model": "haiku",
+    "rep": 2,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T3--typed--haiku--r2.md"
+  },
+  {
+    "run_id": "T3--typed--haiku--r3",
+    "task": 3,
+    "arm": "typed",
+    "model": "haiku",
+    "rep": 3,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T3--typed--haiku--r3.md"
+  },
+  {
+    "run_id": "T3--typed--haiku--r4",
+    "task": 3,
+    "arm": "typed",
+    "model": "haiku",
+    "rep": 4,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T3--typed--haiku--r4.md"
+  },
+  {
+    "run_id": "T3--typed--haiku--r5",
+    "task": 3,
+    "arm": "typed",
+    "model": "haiku",
+    "rep": 5,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T3--typed--haiku--r5.md"
+  },
+  {
+    "run_id": "T4--declarative--sonnet--r1",
+    "task": 4,
+    "arm": "declarative",
+    "model": "sonnet",
+    "rep": 1,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T4--declarative--sonnet--r1.md"
+  },
+  {
+    "run_id": "T4--declarative--sonnet--r2",
+    "task": 4,
+    "arm": "declarative",
+    "model": "sonnet",
+    "rep": 2,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T4--declarative--sonnet--r2.md"
+  },
+  {
+    "run_id": "T4--declarative--sonnet--r3",
+    "task": 4,
+    "arm": "declarative",
+    "model": "sonnet",
+    "rep": 3,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T4--declarative--sonnet--r3.md"
+  },
+  {
+    "run_id": "T4--declarative--sonnet--r4",
+    "task": 4,
+    "arm": "declarative",
+    "model": "sonnet",
+    "rep": 4,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T4--declarative--sonnet--r4.md"
+  },
+  {
+    "run_id": "T4--declarative--sonnet--r5",
+    "task": 4,
+    "arm": "declarative",
+    "model": "sonnet",
+    "rep": 5,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T4--declarative--sonnet--r5.md"
+  },
+  {
+    "run_id": "T4--declarative--haiku--r1",
+    "task": 4,
+    "arm": "declarative",
+    "model": "haiku",
+    "rep": 1,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T4--declarative--haiku--r1.md"
+  },
+  {
+    "run_id": "T4--declarative--haiku--r2",
+    "task": 4,
+    "arm": "declarative",
+    "model": "haiku",
+    "rep": 2,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T4--declarative--haiku--r2.md"
+  },
+  {
+    "run_id": "T4--declarative--haiku--r3",
+    "task": 4,
+    "arm": "declarative",
+    "model": "haiku",
+    "rep": 3,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T4--declarative--haiku--r3.md"
+  },
+  {
+    "run_id": "T4--declarative--haiku--r4",
+    "task": 4,
+    "arm": "declarative",
+    "model": "haiku",
+    "rep": 4,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T4--declarative--haiku--r4.md"
+  },
+  {
+    "run_id": "T4--declarative--haiku--r5",
+    "task": 4,
+    "arm": "declarative",
+    "model": "haiku",
+    "rep": 5,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T4--declarative--haiku--r5.md"
+  },
+  {
+    "run_id": "T4--typed--sonnet--r1",
+    "task": 4,
+    "arm": "typed",
+    "model": "sonnet",
+    "rep": 1,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T4--typed--sonnet--r1.md"
+  },
+  {
+    "run_id": "T4--typed--sonnet--r2",
+    "task": 4,
+    "arm": "typed",
+    "model": "sonnet",
+    "rep": 2,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T4--typed--sonnet--r2.md"
+  },
+  {
+    "run_id": "T4--typed--sonnet--r3",
+    "task": 4,
+    "arm": "typed",
+    "model": "sonnet",
+    "rep": 3,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T4--typed--sonnet--r3.md"
+  },
+  {
+    "run_id": "T4--typed--sonnet--r4",
+    "task": 4,
+    "arm": "typed",
+    "model": "sonnet",
+    "rep": 4,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T4--typed--sonnet--r4.md"
+  },
+  {
+    "run_id": "T4--typed--sonnet--r5",
+    "task": 4,
+    "arm": "typed",
+    "model": "sonnet",
+    "rep": 5,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T4--typed--sonnet--r5.md"
+  },
+  {
+    "run_id": "T4--typed--haiku--r1",
+    "task": 4,
+    "arm": "typed",
+    "model": "haiku",
+    "rep": 1,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T4--typed--haiku--r1.md"
+  },
+  {
+    "run_id": "T4--typed--haiku--r2",
+    "task": 4,
+    "arm": "typed",
+    "model": "haiku",
+    "rep": 2,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T4--typed--haiku--r2.md"
+  },
+  {
+    "run_id": "T4--typed--haiku--r3",
+    "task": 4,
+    "arm": "typed",
+    "model": "haiku",
+    "rep": 3,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T4--typed--haiku--r3.md"
+  },
+  {
+    "run_id": "T4--typed--haiku--r4",
+    "task": 4,
+    "arm": "typed",
+    "model": "haiku",
+    "rep": 4,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T4--typed--haiku--r4.md"
+  },
+  {
+    "run_id": "T4--typed--haiku--r5",
+    "task": 4,
+    "arm": "typed",
+    "model": "haiku",
+    "rep": 5,
+    "prompt_path": "/Users/gyprado/dev/tank/evals/authoring/runs/round3/prompts/T4--typed--haiku--r5.md"
+  }
+]

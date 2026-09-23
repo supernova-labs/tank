@@ -1,0 +1,8 @@
+{"ts": 1789684002.9725912, "run_id": "V1--none--intro--r3", "sql": "INFO FOR TABLE article;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789684005.8601978, "run_id": "V1--none--intro--r3", "sql": "INFO FOR DB;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789684008.953016, "run_id": "V1--none--intro--r3", "sql": "SELECT id, title, status, published_at FROM article;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 48}
+{"ts": 1789684012.486346, "run_id": "V1--none--intro--r3", "sql": "INFO FOR TABLE passage; INFO FOR TABLE factbox; INFO FOR TABLE brief;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789684015.999274, "run_id": "V1--none--intro--r3", "sql": "SELECT * FROM brief WHERE article IN [article:a12, article:a19, article:a28, article:a33, article:a41];", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789684019.505858, "run_id": "V1--none--intro--r3", "sql": "SELECT * FROM brief WHERE kind = 't2' OR kind='t3';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 7}
+{"ts": 1789684026.4817212, "run_id": "V1--none--intro--r3", "sql": "SELECT id, heading, body FROM factbox WHERE body CONTAINS 'kill' OR heading CONTAINS 'kill' OR body CONTAINS 'pull' OR heading CONTAINS 'pull';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789684031.787641, "run_id": "V1--none--intro--r3", "sql": "SELECT id, status, body FROM article WHERE body CONTAINS 'kill' OR body CONTAINS 'pull' OR body CONTAINS 'spike' OR body CONTAINS 'retract';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}

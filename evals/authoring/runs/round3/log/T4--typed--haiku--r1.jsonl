@@ -1,0 +1,2 @@
+{"ts": 1789743944.981636, "run_id": "T4--typed--haiku--r1", "arm": "typed", "task": 4, "constructs": true, "arm_ok": true, "exact": false, "diff_count": 4, "diffs": ["differs: relations[1].from_ = 'f_a_q', expected 'faq'", "differs: relations[1].name = 'coves_manual', expected 'covers_manual'", "differs: relations[1].table = 'coves_manual', expected 'covers_manual'", "differs: types[1].name = 'f_a_q', expected 'faq'"]}
+{"ts": 1789743953.101352, "run_id": "T4--typed--haiku--r1", "arm": "typed", "task": 4, "constructs": true, "arm_ok": true, "exact": true, "diff_count": 0}

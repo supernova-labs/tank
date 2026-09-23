@@ -1,0 +1,8 @@
+{"ts": 1789683969.1335418, "run_id": "N1--minimal--nointro--r3", "sql": "SELECT * FROM article LIMIT 2;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 2}
+{"ts": 1789683972.859343, "run_id": "N1--minimal--nointro--r3", "sql": "SELECT * FROM passage LIMIT 2;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 2}
+{"ts": 1789683972.9556422, "run_id": "N1--minimal--nointro--r3", "sql": "SELECT * FROM brief LIMIT 2;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 2}
+{"ts": 1789683973.042731, "run_id": "N1--minimal--nointro--r3", "sql": "SELECT * FROM factbox LIMIT 2;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 2}
+{"ts": 1789683980.086088, "run_id": "N1--minimal--nointro--r3", "sql": "SELECT kind, count() AS c FROM brief GROUP BY kind;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789683983.985634, "run_id": "N1--minimal--nointro--r3", "sql": "SELECT * FROM brief;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 12}
+{"ts": 1789683989.924845, "run_id": "N1--minimal--nointro--r3", "sql": "SELECT id FROM article WHERE body ~ 'quantum' OR body ~ 'Quantum';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789683990.020114, "run_id": "N1--minimal--nointro--r3", "sql": "SELECT id FROM factbox WHERE body ~ 'quantum' OR body ~ 'Quantum';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 2}

@@ -1,0 +1,2 @@
+{"ts": 1789674939.617536, "run_id": "V2--full--nointro--r2", "sql": "SELECT id, kind, text FROM brief LIMIT 50", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 12}
+{"ts": 1789674943.2524831, "run_id": "V2--full--nointro--r2", "sql": "SELECT count() FROM brief WHERE kind = 't3' GROUP ALL", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 1}

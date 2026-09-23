@@ -1,0 +1,1 @@
+{"ts": 1789674993.6459908, "run_id": "N2--full--nointro--r2", "sql": "SELECT id, text FROM brief WHERE text CONTAINS 'climate';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}

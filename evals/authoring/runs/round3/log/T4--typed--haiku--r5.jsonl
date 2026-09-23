@@ -1,0 +1,2 @@
+{"ts": 1789743956.8390248, "run_id": "T4--typed--haiku--r5", "arm": "typed", "task": 4, "constructs": true, "arm_ok": true, "exact": false, "diff_count": 2, "diffs": ["differs: relations[1].from_ = 'f_a_q', expected 'faq'", "differs: types[1].name = 'f_a_q', expected 'faq'"]}
+{"ts": 1789743964.2490392, "run_id": "T4--typed--haiku--r5", "arm": "typed", "task": 4, "constructs": true, "arm_ok": true, "exact": true, "diff_count": 0}

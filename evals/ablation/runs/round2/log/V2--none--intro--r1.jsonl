@@ -1,0 +1,4 @@
+{"ts": 1789684016.555795, "run_id": "V2--none--intro--r1", "sql": "INFO FOR DB;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789684019.2325408, "run_id": "V2--none--intro--r1", "sql": "INFO FOR TABLE passage;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789684022.886514, "run_id": "V2--none--intro--r1", "sql": "INFO FOR TABLE article; INFO FOR TABLE factbox; INFO FOR TABLE brief;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789684026.1669729, "run_id": "V2--none--intro--r1", "sql": "SELECT id, kind, text FROM brief;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 12}

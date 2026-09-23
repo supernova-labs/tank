@@ -1,0 +1,1 @@
+{"ts": 1789675289.501256, "run_id": "G2--no_values--nointro--r3", "sql": "SELECT out FROM covers WHERE in = (SELECT VALUE id FROM article WHERE title = 'Election maps redrawn')[0];", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 1}

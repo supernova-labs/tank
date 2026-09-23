@@ -25,12 +25,12 @@ The two real challenges: **indexing and ontology** (what the library validates �
 
 ## Tank 0.1 — the validator (`tank check`)
 
-0.1 ships the first piece: **ontology as Pydantic code + deterministic checking against SurrealDB** — no LLM involved, CI-ready. This is the *validator milestone* of the first phase; the second half (the skill that lets an agent write access functions reading only the ontology) comes next.
+0.1 ships the first piece: **ontology as code + deterministic checking against SurrealDB** — no LLM involved, CI-ready. This is the *validator milestone* of the first phase; the second half (the skill that lets an agent write access functions reading only the ontology) comes next.
 
-**1. Declare your ontology** (`ontology.py` in your project):
+**1. Declare your ontology** (`ontology.py` in your project, kept free of database connections and settings):
 
 ```python
-from tank import Attr, Ontology, StableId, UnitType
+from tank import Attr, Ontology, Relation, StableId, UnitType
 
 ontology = Ontology(
     name="assessments",   # who this declaration is
@@ -42,27 +42,77 @@ ontology = Ontology(
             id=StableId.of("code"),
             text="body_text",
             attrs=[
+                Attr("code", "string"),
                 Attr("status", "string", values=["current", "revoked"]),
                 # Opaque codes: declare what they MEAN, not just which exist.
                 # An agent can already discover the list from the data; in an
                 # ablation, the bare list cost six queries to decode where the
                 # mapping cost one.
-                Attr("stage", "string", values={"s_02": "in review", "s_07": "signed off"}),
+                Attr("priority", "string", values={"p1": "high", "p2": "medium", "p3": "low"}),
                 Attr("issued_at", "datetime"),
             ],
         ),
+        UnitType("agency", table="agency", attrs=[Attr("acronym", "string")]),
+    ],
+    relations=[
+        Relation("agency", "report", "agency", kind="field_link", field="agency"),
     ],
 )
 ```
 
 `name` and `version` are required and have no default: they are the human half
-of the stamp that says *which* declaration a later observation was made
-against. `ontology.stamp()` pairs them with a digest of the declaration itself
-(`assessments@0.1.0+0d7136718992`), so reordering your types for readability
-does not change the identity, and editing them without bumping `version` does
-not go unnoticed.
+of the stamp that says *which* declaration a later observation was made against.
+`ontology.stamp()` pairs them with a digest of the declaration itself, so
+reordering your types for readability does not change the identity, and editing
+one without bumping `version` does not go unnoticed.
 
 An internally inconsistent ontology (a relation pointing at an undeclared type, a scope without its relation, a vector without a dimension…) **blows up at import time** with every `ONT-*` code at once — the build breaks before any database connection exists.
+
+<details>
+<summary>The same declaration as typed classes (<code>tank.typed</code>, opt-in)</summary>
+
+If your project already keeps pydantic models of its domain, the declaration can
+live on them instead, and there is no second copy to drift:
+
+```python
+from datetime import datetime
+from typing import Annotated, Literal
+
+from tank import Ontology
+from tank.typed import Key, Link, Text, Unit, Values
+
+
+class Agency(Unit, table="agency"):
+    acronym: str
+
+
+class Report(Unit, table="technical_assessment", nature="original"):
+    code: Annotated[str, Key()]
+    body_text: Annotated[str, Text()]
+    status: Literal["current", "revoked"]
+    priority: Annotated[
+        Literal["p1", "p2", "p3"],
+        Values({"p1": "high", "p2": "medium", "p3": "low"}),
+    ]
+    issued_at: datetime
+    agency: Link[Agency]
+
+
+ontology = Ontology.of(Agency, Report, name="assessments", version="0.1.0")
+```
+
+`Ontology.of(...)` derives exactly the declarative form above, and `tests/test_typed.py`
+holds the two to that. The markers are imported from `tank.typed` rather than
+from `tank`: names like `Text`, `Key` and `Link` collide with half the ecosystem
+at the top level, and a name in `__all__` is a promise.
+
+Which form is better is an open question with evidence on one side only so far:
+in the authoring ablation the declarative form won first-try accuracy in all
+three rounds (100% against 85% in the round with disambiguated specs). That
+measured an *agent writing* a declaration, not a *human maintaining* one
+alongside a domain model, which is the case the typed form is for.
+
+</details>
 
 **2. Run the check:**
 

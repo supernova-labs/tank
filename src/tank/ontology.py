@@ -42,6 +42,7 @@ __all__ = [
     "Ontology",
     "OntologyError",
     "Relation",
+    "Rendered",
     "Scope",
     "StableId",
     "UnitType",
@@ -211,6 +212,14 @@ class Vector(_PosModel):
     model: str | None = None
 
 
+class Rendered(BaseModel):
+    """The unit's text is *computed* by a method on the typed class (``@rendered_text``),
+    not read from a field — entity cards, fact sentences. The declaration only records
+    the method name; the JSON export says "computed, see the class"."""
+
+    method: str = Field(min_length=1)
+
+
 class FullText(_PosModel):
     """Declares that a unit type is full-text searchable on one field.
 
@@ -233,7 +242,7 @@ class UnitType(_PosModel):
     table: str = Field(min_length=1)
     nature: Nature = "original"
     id: StableId | None = None
-    text: str | list[str] | None = None
+    text: str | list[str] | Rendered | None = None
     attrs: list[Attr] = Field(default_factory=list)
     locator: Locator | None = None
     vector: Vector | None = None
@@ -247,6 +256,7 @@ class UnitType(_PosModel):
             fields.add(self.text)
         elif isinstance(self.text, list):
             fields.update(self.text)
+        # Rendered text references no field: nothing to verify structurally
         if self.id:
             fields.update(self.id.fields)
             fields.update(self.id.version_fields)
@@ -278,20 +288,26 @@ class Relation(_PosModel):
     carry a ``weight``. ``kind="field_link"``: a record field on the *from_* type
     pointing at *to* (``field`` is required; no weight — there is nowhere to
     store it).
-    ``from_``/``to`` name **unit types**, not tables.
+    ``from_``/``to`` name **unit types**, not tables. ``to`` may list several
+    types (``mentions: note -> source | note``); ``targets()`` normalizes it.
     """
 
     name: str = Field(min_length=1)
     from_: str = Field(min_length=1)
-    to: str = Field(min_length=1)
+    to: str | list[str] = Field(min_length=1)
     kind: RelationKind = "edge"
     table: str | None = None
     field: str | None = None
     weight: Weight | None = None
     description: str | None = None
 
+    def targets(self) -> list[str]:
+        return [self.to] if isinstance(self.to, str) else list(self.to)
+
     @model_validator(mode="after")
     def _kind_shape(self) -> Relation:
+        if isinstance(self.to, list) and (not self.to or any(not t for t in self.to)):
+            raise ValueError(f"relation {self.name!r}: `to` must name at least one unit type")
         if self.kind == "edge":
             if self.table is None:
                 self.table = self.name
@@ -349,6 +365,7 @@ _ORDER_IS_NOISE: frozenset[str] = frozenset(
         "types.attrs",
         "types.attrs.values",
         "relations",
+        "relations.to",  # a multi-target link is a set of targets; order is not meaning
         "scopes",
         "freshness",
     }
@@ -432,7 +449,8 @@ class Ontology(_PosModel):
 
         # ONT-002 — relations reference declared types
         for rel in self.relations:
-            for side, ref in (("from_", rel.from_), ("to", rel.to)):
+            refs = [("from_", rel.from_)] + [("to", t) for t in rel.targets()]
+            for side, ref in refs:
                 if ref not in types:
                     violations.append(
                         Violation(
@@ -503,6 +521,13 @@ class Ontology(_PosModel):
         return self
 
     # -- convenience -----------------------------------------------------------
+
+    @classmethod
+    def of(cls, *models: Any, **kwargs: Any) -> Ontology:
+        """Derive the ontology from typed ``Unit``/``Edge`` classes (see ``tank.typed``)."""
+        from tank.typed import build_ontology  # lazy: typed depends on this module
+
+        return build_ontology(*models, **kwargs)
 
     def type_named(self, name: str) -> UnitType:
         for unit_type in self.types:

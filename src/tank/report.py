@@ -28,8 +28,8 @@ NOT_VERIFIED: list[str] = [
     "search/ranking behavior — no access queries are executed by `tank check`",
     "semantic direction of relations — structure is checked, meaning is not",
     (
-        "sampling coverage — samples read the first N rows (typically the oldest), and a "
-        "field explicitly set to null counts as present"
+        "sampling coverage — samples read the first N rows (typically the oldest), so a "
+        "value that only occurs in recent rows can be missed"
     ),
     (
         "declared-but-inert constructs — `nature` and `StableId.version_fields` are recorded "

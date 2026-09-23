@@ -259,17 +259,26 @@ class Introspector:
         return 0
 
     async def sample_values(self, table: str, field_name: str, limit: int = 200) -> list[object]:
+        # NULL is excluded alongside NONE: an explicit null is "we looked and there
+        # is nothing there", never a value. Letting it through puts `None` in the
+        # sample, which ATTR-010 then reports as the literal string 'None' being
+        # outside the declared vocabulary — unobservable rendered as wrong.
         result = await self.query(
             f"SELECT VALUE `{field_name}` FROM `{table}` "
-            f"WHERE `{field_name}` != NONE LIMIT {limit};"
+            f"WHERE `{field_name}` != NONE AND `{field_name}` != NULL LIMIT {limit};"
         )
         return list(result) if isinstance(result, list) else []
 
     async def field_presence(self, table: str, field_name: str) -> tuple[int, int]:
-        """(rows where field is present, total rows) — count(expr) counts truthy values."""
+        """(rows where field is present, total rows) — count(expr) counts truthy values.
+
+        A field explicitly set to NULL is *absent*, not present. Counting it as
+        present is the hard requirement inverted: it reports coverage the data
+        does not have.
+        """
         result = await self.query(
-            f"SELECT count(`{field_name}` != NONE) AS present, count() AS total "
-            f"FROM `{table}` GROUP ALL;"
+            f"SELECT count(`{field_name}` != NONE AND `{field_name}` != NULL) AS present, "
+            f"count() AS total FROM `{table}` GROUP ALL;"
         )
         if isinstance(result, list) and result:
             row = result[0]

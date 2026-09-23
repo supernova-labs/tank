@@ -20,6 +20,12 @@ import ontology as declarative
 import ontology_typed as typed
 
 from tank import (
+    Ontology,
+    OntologyError,
+    Rendered,
+    Scope,
+)
+from tank.typed import (
     Ages,
     DeclarationError,
     Edge,
@@ -30,10 +36,6 @@ from tank import (
     Link,
     Locate,
     Named,
-    Ontology,
-    OntologyError,
-    Rendered,
-    Scope,
     Searchable,
     Text,
     Unit,
@@ -134,7 +136,9 @@ def test_serialized_typed_values_let_an_agent_build_the_correct_priority_filter(
             Values({"p1": "high", "p2": "medium", "p3": "low"}),
         ]
 
-    contract = Ontology.model_validate_json(Ontology.of(Ticket).to_json())
+    contract = Ontology.model_validate_json(
+        Ontology.of(Ticket, name="probe", version="0.1.0").to_json()
+    )
     priority = contract.type_named("ticket").attrs[0]
 
     # Minimal stand-in for the agent's contract lookup: select the stored code by
@@ -190,7 +194,7 @@ def test_edge_defaults_and_weight():
         w: Annotated[float, Weighted(higher_is_better=False, range=(0, 1))]
         note: str = ""  # not part of the ontology, still usable as data
 
-    ontology = Ontology.of(Src, Dst, LinksTo)
+    ontology = Ontology.of(Src, Dst, LinksTo, name="probe", version="0.1.0")
     rel = ontology.relations[0]
     assert (rel.name, rel.table, rel.from_, rel.to) == ("links_to", "links_to", "src", "dst")
     assert rel.weight.field == "w" and rel.weight.higher_is_better is False
@@ -204,7 +208,10 @@ def test_link_name_defaults_to_field_name_and_named_overrides_it():
         parent: Link[Parent]
         other: Annotated[Link[Parent], Named("also_parent")]
 
-    names = {(r.name, r.from_, r.to, r.field) for r in Ontology.of(Child, Parent).relations}
+    names = {
+        (r.name, r.from_, r.to, r.field)
+        for r in Ontology.of(Child, Parent, name="probe", version="0.1.0").relations
+    }
     assert names == {
         ("parent", "child", "parent", "parent"),
         ("also_parent", "child", "parent", "other"),
@@ -218,7 +225,7 @@ def test_forward_reference_to_a_class_declared_later_in_the_module():
     class Parent(Unit, table="parent"):
         name: str
 
-    rel = Ontology.of(Child, Parent).relations[0]
+    rel = Ontology.of(Child, Parent, name="probe", version="0.1.0").relations[0]
     assert (rel.from_, rel.to, rel.field) == ("child", "parent", "parent")
 
 
@@ -238,7 +245,7 @@ def test_multi_target_link_and_edge():
     class Mentions(Edge, src=Note, dst=Source | Note):
         pass
 
-    ontology = Ontology.of(Source, Note, Mentions)
+    ontology = Ontology.of(Source, Note, Mentions, name="probe", version="0.1.0")
     by_name = {r.name: r for r in ontology.relations}
     assert by_name["about"].to == ["source", "note"]
     assert by_name["about"].targets() == ["source", "note"]
@@ -259,7 +266,7 @@ def test_rendered_text_becomes_a_computed_declaration():
     assert unit.text == Rendered(method="card")
     assert unit.declared_fields() == {"name", "kind"}  # nothing structural to verify
     assert Entity(name="ACME", kind="organization").card() == "ACME (organization)"
-    assert '"method": "card"' in Ontology.of(Entity).to_json()
+    assert '"method": "card"' in Ontology.of(Entity, name="probe", version="0.1.0").to_json()
 
 
 def test_typed_classes_are_usable_as_data_models():
@@ -349,13 +356,13 @@ def test_link_to_undeclared_class_fails_at_build():
         o: Link[Orphan]
 
     with pytest.raises(DeclarationError, match="not among the declared"):
-        Ontology.of(Ref)  # Orphan not passed
+        Ontology.of(Ref, name="probe", version="0.1.0")  # Orphan not passed
 
     class Ref2(Unit, table="ref2"):
         o: Link["Ghost"]  # noqa: F821 - deliberately undefined
 
     with pytest.raises(DeclarationError, match="Ghost"):
-        Ontology.of(Ref2)
+        Ontology.of(Ref2, name="probe", version="0.1.0")
 
 
 def test_static_ont_checks_still_apply_to_the_derived_ontology():
@@ -363,7 +370,7 @@ def test_static_ont_checks_still_apply_to_the_derived_ontology():
         name: str
 
     with pytest.raises(OntologyError) as err:
-        Ontology.of(A, scopes=[Scope("s", via="nope")])
+        Ontology.of(A, scopes=[Scope("s", via="nope")], name="probe", version="0.1.0")
     assert [v.code for v in err.value.violations] == ["ONT-003"]
 
 
@@ -439,7 +446,9 @@ async def test_multi_target_relations_are_checked_against_the_database(live_db):
         RELATE note:n1->mentions->source:s1; RELATE note:n2->mentions->note:n1;
         """,
     )
-    report = await check(Ontology.of(Source, Note, Mentions), live_db)
+    report = await check(
+        Ontology.of(Source, Note, Mentions, name="probe", version="0.1.0"), live_db
+    )
     by_code = {(f.code, f.subject): f.status for f in report.findings}
     assert by_code[("REL-003", "relation:about")] == "PASS"
     assert by_code[("REL-002", "relation:mentions")] == "PASS"
@@ -447,7 +456,9 @@ async def test_multi_target_relations_are_checked_against_the_database(live_db):
 
     # sabotage: the link column only admits sources, the ontology says source | note
     sql(live_db, "DEFINE FIELD OVERWRITE about ON note TYPE option<record<source>>;")
-    report = await check(Ontology.of(Source, Note, Mentions), live_db)
+    report = await check(
+        Ontology.of(Source, Note, Mentions, name="probe", version="0.1.0"), live_db
+    )
     assert {(f.code, f.status) for f in report.findings if f.subject == "relation:about"} == {
         ("REL-003", "FAIL")
     }

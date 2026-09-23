@@ -2,7 +2,8 @@
 
 from typing import Annotated, Literal
 
-from tank import Edge, Key, Link, Locate, Named, Ontology, Text, Unit
+from tank import Ontology
+from tank.typed import Edge, Key, Link, Locate, Named, Text, Unit
 
 
 class Manual(Unit, table="manual"):

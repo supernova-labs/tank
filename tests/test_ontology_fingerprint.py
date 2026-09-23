@@ -84,7 +84,8 @@ def reference() -> Ontology:
         ],
         relations=[
             Relation("about", "news", "entity", weight=Weight("relevance", range=(0.0, 1.0))),
-            Relation("cites", "news", "news"),
+            # multi-target: exercises the `relations.to` list path
+            Relation("cites", "news", ["news", "entity"]),
         ],
         scopes=[Scope("desk"), Scope("byline")],
         freshness=[
@@ -285,7 +286,7 @@ def test_description_is_not_cosmetic():
 # ----------------------------------------------------------------- the golden
 
 
-GOLDEN = "newsroom@1.4.0+d24c9553f251"
+GOLDEN = "newsroom@1.4.0+4f557e61e66b"
 
 
 def test_golden_stamp_is_frozen():

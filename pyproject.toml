@@ -34,3 +34,6 @@ testpaths = ["tests"]
 [tool.ruff]
 line-length = 100
 src = ["src", "tests"]
+# Frozen experiment data: what agents actually wrote, under the prompts of their
+# round. Formatting or "fixing" it would rewrite the record.
+extend-exclude = ["evals/*/runs/"]

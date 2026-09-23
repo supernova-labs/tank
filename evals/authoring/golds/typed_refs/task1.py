@@ -4,7 +4,8 @@ expressible in both forms; never shown to agents."""
 from datetime import datetime
 from typing import Annotated, Literal
 
-from tank import Key, Ontology, Text, Unit
+from tank import Ontology
+from tank.typed import Key, Text, Unit
 
 
 class Ticket(Unit, table="ticket", nature="original"):

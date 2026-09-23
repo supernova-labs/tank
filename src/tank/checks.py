@@ -624,12 +624,29 @@ async def _check_field_link(
         )
         return
     actual_targets = _record_targets(defined.type)
-    if actual_targets is not None and set(to_tables) <= actual_targets:
+    # Equality, not containment. A column that accepts MORE tables than the
+    # declaration names is not slack, it is a contract the agent cannot see: the
+    # declaration is what an agent reads to decide what a traversal returns, so
+    # an undeclared target is a row it will mishandle. The message prints the
+    # type that was OBSERVED, never the one derived from the declaration —
+    # otherwise a PASS asserts the shape it was looking for rather than the one
+    # it found.
+    if actual_targets is not None and actual_targets == set(to_tables):
         report.add(
             "REL-003",
             "PASS",
             subject,
-            f"field_link {link_field!r} on {from_table!r} is typed {expected}",
+            f"field_link {link_field!r} on {from_table!r} is {defined.type!r}",
+            table=from_table,
+        )
+    elif actual_targets is not None and set(to_tables) < actual_targets:
+        report.add(
+            "REL-003",
+            "FAIL",
+            subject,
+            f"field_link {link_field!r} on {from_table!r} is {defined.type!r}, which accepts "
+            f"{sorted(actual_targets - set(to_tables))} on top of the declared {expected} — "
+            "declare every target the column can hold, or narrow the column",
             table=from_table,
         )
     elif actual_targets is not None:

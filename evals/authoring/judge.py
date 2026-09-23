@@ -111,7 +111,7 @@ def diff(gold: dict, got: dict) -> list[str]:
 
 
 def check_arm(module, arm: str) -> str | None:
-    from tank import Edge, Unit
+    from tank.typed import Edge, Unit
 
     typed_classes = [
         v

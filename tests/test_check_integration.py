@@ -19,7 +19,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).parent / "fixtures" / "news_mini"))
 from ontology import build as build_news
 
-from tank import Attr, Locator, Ontology, StableId, UnitType
+from tank import Attr, Locator, Ontology, Relation, StableId, UnitType
 from tank.checks import run_check
 from tank.introspect import Introspector
 
@@ -334,3 +334,69 @@ async def test_null_does_not_masquerade_as_a_vocabulary_violation(database):
     messages = " ".join(f.message for f in report.findings if f.code == "ATTR-010")
     assert "None" not in messages
     assert "WARN" not in statuses(report, "ATTR-010")
+
+
+# ------------------------------ a column wider than the declaration is a finding
+
+
+WIDE_LINK_SEED = """
+DEFINE TABLE source SCHEMAFULL PERMISSIONS NONE;
+DEFINE FIELD title ON source TYPE string;
+DEFINE TABLE note SCHEMAFULL PERMISSIONS NONE;
+DEFINE FIELD title ON note TYPE string;
+DEFINE FIELD about ON note TYPE option<record<source | note>>;
+CREATE source:s1 SET title = 's';
+CREATE note:n1 SET title = 'n1', about = source:s1;
+CREATE note:n2 SET title = 'n2', about = note:n1;
+"""
+
+
+def link_ontology(targets) -> Ontology:
+    return Ontology(
+        name="links",
+        version="0.1.0",
+        types=[
+            UnitType("source", table="source", attrs=[Attr("title", "string")]),
+            UnitType("note", table="note", attrs=[Attr("title", "string")]),
+        ],
+        relations=[Relation("about", "note", targets, kind="field_link", field="about")],
+    )
+
+
+async def test_rel003_fails_when_the_column_accepts_more_than_was_declared(database):
+    """The counterfactual the multi-target check needs.
+
+    The column admits `source | note` and the declaration names only `source`.
+    That is not slack: the declaration is what an agent reads to decide what a
+    traversal returns, so an undeclared target is a row it will mishandle. And
+    the data already contains one, note:n2 points at a note.
+    """
+    sql(database, WIDE_LINK_SEED)
+    report = await check(link_ontology("source"), database)
+    finding = next(f for f in report.findings if f.code == "REL-003")
+    assert finding.status == "FAIL"
+    assert "note" in finding.message  # names the target that was not declared
+
+
+async def test_rel003_passes_when_the_declaration_names_every_target(database):
+    sql(database, WIDE_LINK_SEED)
+    report = await check(link_ontology(["source", "note"]), database)
+    finding = next(f for f in report.findings if f.code == "REL-003")
+    assert finding.status == "PASS"
+
+
+async def test_rel003_pass_message_prints_the_observed_type_not_the_expected_one(database):
+    """A PASS that echoes the declaration back cannot be read as evidence.
+
+    This one printed `is typed record<source>` over a column that was
+    `option<record<source | note>>`: the check asserting the shape it went
+    looking for rather than the one it found.
+    """
+    sql(database, WIDE_LINK_SEED)
+    report = await check(link_ontology(["source", "note"]), database)
+    message = next(f.message for f in report.findings if f.code == "REL-003")
+    # The observed type is normalized (`none|record<source|note>`); the one
+    # derived from the declaration is `record<source|note>`. The `none|` prefix
+    # is therefore the only part that tells them apart, and asserting on the
+    # target names alone would pass either way and prove nothing.
+    assert "none|" in message, message

@@ -365,6 +365,7 @@ _ORDER_IS_NOISE: frozenset[str] = frozenset(
         "types.attrs",
         "types.attrs.values",
         "relations",
+        "relations.to",  # a multi-target link is a set of targets; order is not meaning
         "scopes",
         "freshness",
     }

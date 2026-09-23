@@ -583,6 +583,8 @@ def _targets(
 
 def build_ontology(
     *models: type[Unit | Edge],
+    name: str,
+    version: str,
     scopes: list[Scope] | None = None,
     relations: list[Relation] | None = None,
     freshness: list[Freshness] | None = None,
@@ -606,11 +608,11 @@ def build_ontology(
     derived_relations: list[Relation] = []
     derived_freshness: list[Freshness] = []
     for unit_cls in units.values():
-        for field_name, link, name in unit_cls.__tank_links__:
+        for field_name, link, link_name in unit_cls.__tank_links__:
             where = f"{unit_cls.__name__}.{field_name}"
             derived_relations.append(
                 Relation(
-                    name=name or field_name,
+                    name=link_name or field_name,
                     from_=unit_cls.__tank_name__,
                     to=_targets(link.targets, units, where),
                     kind="field_link",
@@ -635,6 +637,8 @@ def build_ontology(
         )
 
     return Ontology(
+        name=name,
+        version=version,
         types=[u.unit_type() for u in units.values()],
         relations=derived_relations + list(relations or []),
         scopes=list(scopes or []),

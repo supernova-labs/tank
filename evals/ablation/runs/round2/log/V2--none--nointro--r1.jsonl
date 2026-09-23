@@ -1,0 +1,8 @@
+{"ts": 1789684124.317206, "run_id": "V2--none--nointro--r1", "sql": "SELECT id, type FROM passage LIMIT 20;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 10}
+{"ts": 1789684125.4689631, "run_id": "V2--none--nointro--r1", "sql": "SELECT id, type FROM factbox LIMIT 20;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 8}
+{"ts": 1789684128.455999, "run_id": "V2--none--nointro--r1", "sql": "SELECT * FROM factbox LIMIT 3;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789684129.780009, "run_id": "V2--none--nointro--r1", "sql": "SELECT * FROM passage LIMIT 3;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789684133.593596, "run_id": "V2--none--nointro--r1", "sql": "SELECT id, heading, body FROM factbox;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 8}
+{"ts": 1789684134.828248, "run_id": "V2--none--nointro--r1", "sql": "SELECT * FROM brief LIMIT 5;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 5}
+{"ts": 1789684138.4773288, "run_id": "V2--none--nointro--r1", "sql": "SELECT id, kind, text FROM brief WHERE kind = 't3';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789684141.768918, "run_id": "V2--none--nointro--r1", "sql": "SELECT kind, count() FROM brief GROUP BY kind;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}

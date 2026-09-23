@@ -1,0 +1,1 @@
+{"ts": 1789673739.137596, "run_id": "V1--full--nointro--r2", "sql": "SELECT id FROM article WHERE status = 'spiked';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 2}

@@ -1,0 +1,2 @@
+{"ts": 1789742843.966157, "run_id": "T4--declarative--sonnet--r2", "arm": "declarative", "task": 4, "constructs": true, "arm_ok": true, "exact": false, "diff_count": 4, "diffs": ["missing: types[1].fulltext (expected None)", "unexpected: types[1].fulltext.analyzer = None", "unexpected: types[1].fulltext.field = 'answer'", "unexpected: types[1].fulltext.language = None"]}
+{"ts": 1789742854.1696599, "run_id": "T4--declarative--sonnet--r2", "arm": "declarative", "task": 4, "constructs": true, "arm_ok": true, "exact": true, "diff_count": 0}

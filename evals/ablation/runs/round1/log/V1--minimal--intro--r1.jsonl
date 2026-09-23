@@ -1,0 +1,2 @@
+{"ts": 1789674085.3998091, "run_id": "V1--minimal--intro--r1", "sql": "INFO FOR TABLE article;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789674089.0582888, "run_id": "V1--minimal--intro--r1", "sql": "SELECT id FROM article WHERE status = 'spiked';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 2}

@@ -1,0 +1,4 @@
+{"ts": 1789674275.3663208, "run_id": "N1--none--intro--r3", "sql": "INFO FOR DB;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789674277.872213, "run_id": "N1--none--intro--r3", "sql": "INFO FOR TABLE article; INFO FOR TABLE passage; INFO FOR TABLE brief;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789674283.522908, "run_id": "N1--none--intro--r3", "sql": "SELECT id FROM article WHERE body CONTAINS 'quantum' OR title CONTAINS 'quantum'; SELECT id, parent FROM passage WHERE content CONTAINS 'quantum';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789674287.207189, "run_id": "N1--none--intro--r3", "sql": "SELECT id FROM article WHERE string::lowercase(body) CONTAINS 'quantum' OR string::lowercase(title) CONTAINS 'quantum'; SELECT id FROM passage WHERE string::lowercase(content) CONTAINS 'quantum';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 3}

@@ -1,0 +1,3 @@
+{"ts": 1789674097.151484, "run_id": "V2--minimal--intro--r3", "sql": "INFO FOR DB;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789674100.633566, "run_id": "V2--minimal--intro--r3", "sql": "INFO FOR TABLE passage; INFO FOR TABLE brief;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789674104.0092611, "run_id": "V2--minimal--intro--r3", "sql": "SELECT id FROM brief WHERE kind = 'chk';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 2}

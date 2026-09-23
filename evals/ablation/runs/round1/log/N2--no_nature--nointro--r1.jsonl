@@ -1,0 +1,4 @@
+{"ts": 1789674064.081512, "run_id": "N2--no_nature--nointro--r1", "sql": "SELECT id, content FROM passage WHERE content CONTAINS 'climate';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789674065.727627, "run_id": "N2--no_nature--nointro--r1", "sql": "SELECT id, text FROM brief WHERE text CONTAINS 'climate';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 2}
+{"ts": 1789674070.803361, "run_id": "N2--no_nature--nointro--r1", "sql": "SELECT id, text FROM brief WHERE string::lowercase(text) CONTAINS 'climate';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 2}
+{"ts": 1789674072.4653592, "run_id": "N2--no_nature--nointro--r1", "sql": "SELECT id, content FROM passage WHERE string::lowercase(content) CONTAINS 'climate';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}

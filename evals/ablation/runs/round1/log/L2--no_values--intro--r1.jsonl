@@ -1,0 +1,1 @@
+{"ts": 1789673803.131259, "run_id": "L2--no_values--intro--r1", "sql": "SELECT id, parent, take FROM passage WHERE parent.title = 'Climate accord signed' ORDER BY take ASC LIMIT 1;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 1}

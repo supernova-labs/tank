@@ -1,0 +1,2 @@
+{"ts": 1789674144.428597, "run_id": "G1--minimal--intro--r3", "sql": "INFO FOR TABLE article;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789674147.508041, "run_id": "G1--minimal--intro--r3", "sql": "SELECT count() FROM article WHERE desk = 'Science' GROUP ALL;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 1}

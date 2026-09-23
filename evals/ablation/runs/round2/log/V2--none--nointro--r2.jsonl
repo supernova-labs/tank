@@ -1,0 +1,3 @@
+{"ts": 1789684126.246507, "run_id": "V2--none--nointro--r2", "sql": "SELECT * FROM factbox LIMIT 5", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 5}
+{"ts": 1789684127.5723252, "run_id": "V2--none--nointro--r2", "sql": "SELECT * FROM brief LIMIT 5", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 5}
+{"ts": 1789684131.158418, "run_id": "V2--none--nointro--r2", "sql": "SELECT id, kind, text FROM brief ORDER BY kind", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 12}

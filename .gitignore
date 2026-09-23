@@ -6,3 +6,7 @@ __pycache__/
 .ruff_cache/
 dist/
 docs/sup644-estudo/
+
+# evals/*/runs and evals/*/results are versioned on purpose — see evals/README.md.
+# They are what 624 paid agent runs produced, they cannot be regenerated for free,
+# and the harness is not runnable without them.

@@ -1,0 +1,1 @@
+{"ts": 1789675386.404026, "run_id": "V2--no_locator--nointro--r1", "sql": "SELECT id, kind, text FROM brief LIMIT 30;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 12}

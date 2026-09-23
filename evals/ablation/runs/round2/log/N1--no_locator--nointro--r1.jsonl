@@ -1,0 +1,1 @@
+{"ts": 1789675437.023696, "run_id": "N1--no_locator--nointro--r1", "sql": "SELECT id FROM article WHERE body CONTAINS 'quantum'; SELECT id FROM passage WHERE content CONTAINS 'quantum'; SELECT id FROM factbox WHERE body CONTAINS 'quantum';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 5}

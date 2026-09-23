@@ -1,0 +1,3 @@
+{"ts": 1789674155.673381, "run_id": "G2--minimal--intro--r2", "sql": "SELECT id FROM article WHERE title = 'Election maps redrawn';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 1}
+{"ts": 1789674158.24596, "run_id": "G2--minimal--intro--r2", "sql": "INFO FOR DB;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789674160.9018738, "run_id": "G2--minimal--intro--r2", "sql": "SELECT ->covers->topic AS topics FROM article:a4;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 1}

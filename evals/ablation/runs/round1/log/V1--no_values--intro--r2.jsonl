@@ -1,0 +1,1 @@
+{"ts": 1789673786.8214898, "run_id": "V1--no_values--intro--r2", "sql": "SELECT id, status FROM article;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 12}

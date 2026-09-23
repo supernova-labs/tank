@@ -1,0 +1,6 @@
+{"ts": 1789683865.1262, "run_id": "N2--minimal--intro--r2", "sql": "INFO FOR DB;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789683867.868897, "run_id": "N2--minimal--intro--r2", "sql": "INFO FOR TABLE brief; INFO FOR TABLE factbox; INFO FOR TABLE passage;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789683873.0057569, "run_id": "N2--minimal--intro--r2", "sql": "INFO FOR TABLE article; INFO FOR TABLE topic;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789683883.828206, "run_id": "N2--minimal--intro--r2", "sql": "SELECT id FROM passage WHERE content ~ 'climate';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789683888.025336, "run_id": "N2--minimal--intro--r2", "sql": "SELECT id FROM passage WHERE string::lowercase(content) CONTAINS 'climate'; SELECT id FROM brief WHERE string::lowercase(text) CONTAINS 'climate';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789683892.80229, "run_id": "N2--minimal--intro--r2", "sql": "SELECT * FROM brief:b3; SELECT * FROM factbox LIMIT 2;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 3}

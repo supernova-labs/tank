@@ -1,0 +1,3 @@
+{"ts": 1789684055.351821, "run_id": "L2--none--intro--r2", "sql": "SELECT id, title, opening, passages FROM article WHERE title = 'Accord after marathon talks';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 1}
+{"ts": 1789684058.0733519, "run_id": "L2--none--intro--r2", "sql": "INFO FOR TABLE passage;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789684060.8404632, "run_id": "L2--none--intro--r2", "sql": "SELECT id, seq, cut FROM passage WHERE parent = article:a6 ORDER BY seq ASC;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 5}

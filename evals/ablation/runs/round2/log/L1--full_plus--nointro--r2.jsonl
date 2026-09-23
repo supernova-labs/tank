@@ -1,0 +1,2 @@
+{"ts": 1789675092.130018, "run_id": "L1--full_plus--nointro--r2", "sql": "SELECT id FROM article WHERE title = 'Helios processor milestone';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 1}
+{"ts": 1789675095.8544042, "run_id": "L1--full_plus--nointro--r2", "sql": "SELECT id, parent, cut FROM passage WHERE parent = article:a9 ORDER BY cut;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 5}

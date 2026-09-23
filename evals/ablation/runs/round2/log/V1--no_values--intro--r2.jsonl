@@ -1,0 +1,8 @@
+{"ts": 1789675131.546346, "run_id": "V1--no_values--intro--r2", "sql": "SELECT id, status FROM article;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 48}
+{"ts": 1789675135.955755, "run_id": "V1--no_values--intro--r2", "sql": "INFO FOR TABLE article;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789675139.675232, "run_id": "V1--no_values--intro--r2", "sql": "SELECT id, kind, article, article.status FROM brief;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 12}
+{"ts": 1789675144.417962, "run_id": "V1--no_values--intro--r2", "sql": "SELECT id, kind, text FROM brief WHERE kind = 't1';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 5}
+{"ts": 1789675147.7368262, "run_id": "V1--no_values--intro--r2", "sql": "SELECT id, kind, text FROM brief WHERE kind != 't1';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 7}
+{"ts": 1789675152.4534578, "run_id": "V1--no_values--intro--r2", "sql": "SELECT id, status, title, body FROM article WHERE status != 'c_04';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 7}
+{"ts": 1789675159.042588, "run_id": "V1--no_values--intro--r2", "sql": "SELECT id, status, published_at FROM article WHERE status != 'c_04' ORDER BY status;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 7}
+{"ts": 1789675165.5438368, "run_id": "V1--no_values--intro--r2", "sql": "SELECT id, heading, body FROM factbox;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 8}

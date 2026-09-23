@@ -1,0 +1,2 @@
+{"ts": 1789674065.465534, "run_id": "N1--no_nature--nointro--r2", "sql": "SELECT id, body FROM article WHERE string::contains(body, 'quantum') OR string::contains(body, 'Quantum');", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789674069.8279018, "run_id": "N1--no_nature--nointro--r2", "sql": "SELECT id, content, parent FROM passage WHERE string::contains(content, 'quantum') OR string::contains(content, 'Quantum');", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}

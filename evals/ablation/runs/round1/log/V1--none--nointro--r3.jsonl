@@ -1,0 +1,3 @@
+{"ts": 1789674314.284578, "run_id": "V1--none--nointro--r3", "sql": "SELECT * FROM article LIMIT 3;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789674317.258892, "run_id": "V1--none--nointro--r3", "sql": "SELECT id, status FROM article WHERE status != 'filed';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 5}
+{"ts": 1789674322.4166021, "run_id": "V1--none--nointro--r3", "sql": "SELECT status, count() AS c FROM article GROUP BY status;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}

@@ -1,0 +1,5 @@
+{"ts": 1789674318.4351602, "run_id": "V2--none--nointro--r2", "sql": "SELECT id, kind, type FROM passage LIMIT 30", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 8}
+{"ts": 1789674321.608355, "run_id": "V2--none--nointro--r2", "sql": "SELECT * FROM passage LIMIT 3", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789674324.6673229, "run_id": "V2--none--nointro--r2", "sql": "SELECT * FROM brief LIMIT 5", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 5}
+{"ts": 1789674327.664921, "run_id": "V2--none--nointro--r2", "sql": "SELECT id FROM brief WHERE kind = 'chk'", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 2}
+{"ts": 1789674331.282929, "run_id": "V2--none--nointro--r2", "sql": "SELECT count() FROM brief GROUP ALL", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 1}

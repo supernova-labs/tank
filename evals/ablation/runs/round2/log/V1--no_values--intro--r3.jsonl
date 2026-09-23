@@ -1,0 +1,9 @@
+{"ts": 1789675131.6647391, "run_id": "V1--no_values--intro--r3", "sql": "SELECT id, status FROM article;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 48}
+{"ts": 1789675135.6110048, "run_id": "V1--no_values--intro--r3", "sql": "SELECT id, kind, text, article FROM brief;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 12}
+{"ts": 1789675139.307241, "run_id": "V1--no_values--intro--r3", "sql": "INFO FOR TABLE article;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789675144.831112, "run_id": "V1--no_values--intro--r3", "sql": "SELECT id, title, desk, status, published_at FROM article WHERE status != 'c_04';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 7}
+{"ts": 1789675148.901151, "run_id": "V1--no_values--intro--r3", "sql": "SELECT id, body FROM article WHERE status != 'c_04';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 7}
+{"ts": 1789675161.82496, "run_id": "V1--no_values--intro--r3", "sql": "SELECT id, article->covers->topic.name AS topics FROM article WHERE status != 'c_04' PARALLEL;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 7}
+{"ts": 1789675167.658493, "run_id": "V1--no_values--intro--r3", "sql": "SELECT id, status, ->covers->topic.name AS topics FROM article;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 48}
+{"ts": 1789675177.213811, "run_id": "V1--no_values--intro--r3", "sql": "SELECT article, count() FROM passage GROUP BY article;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 1}
+{"ts": 1789675183.0304651, "run_id": "V1--no_values--intro--r3", "sql": "SELECT parent, count() FROM passage GROUP BY parent;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 2}

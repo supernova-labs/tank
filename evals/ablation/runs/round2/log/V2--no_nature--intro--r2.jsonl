@@ -1,0 +1,2 @@
+{"ts": 1789675480.358017, "run_id": "V2--no_nature--intro--r2", "sql": "SELECT kind, count() FROM brief GROUP BY kind;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789675483.270339, "run_id": "V2--no_nature--intro--r2", "sql": "SELECT id, kind, text FROM brief;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 12}

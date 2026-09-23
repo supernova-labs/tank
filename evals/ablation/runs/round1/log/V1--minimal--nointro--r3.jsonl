@@ -1,0 +1,3 @@
+{"ts": 1789674171.024672, "run_id": "V1--minimal--nointro--r3", "sql": "SELECT * FROM article LIMIT 3", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789674174.6371388, "run_id": "V1--minimal--nointro--r3", "sql": "SELECT id, title, status FROM article WHERE status != 'filed'", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 5}
+{"ts": 1789674178.931794, "run_id": "V1--minimal--nointro--r3", "sql": "SELECT id, title, status, published_at FROM article WHERE status IN ['spiked','held']", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 5}

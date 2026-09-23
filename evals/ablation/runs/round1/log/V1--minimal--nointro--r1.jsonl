@@ -1,0 +1,6 @@
+{"ts": 1789674157.609386, "run_id": "V1--minimal--nointro--r1", "sql": "SELECT * FROM article LIMIT 3", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789674160.242094, "run_id": "V1--minimal--nointro--r1", "sql": "SELECT id, status FROM article WHERE status != 'filed'", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 5}
+{"ts": 1789674164.596055, "run_id": "V1--minimal--nointro--r1", "sql": "SELECT id, status, desk, title FROM article WHERE status = 'spiked' OR status = 'held'", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 5}
+{"ts": 1789674168.8276649, "run_id": "V1--minimal--nointro--r1", "sql": "SELECT * FROM event LIMIT 5", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789674172.843585, "run_id": "V1--minimal--nointro--r1", "sql": "SELECT * FROM audit_log LIMIT 5", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789674172.925503, "run_id": "V1--minimal--nointro--r1", "sql": "SELECT * FROM revision LIMIT 5", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}

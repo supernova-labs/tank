@@ -1,0 +1,8 @@
+{"ts": 1789674361.480608, "run_id": "N2--none--nointro--r2", "sql": "SELECT * FROM brief LIMIT 3;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789674366.495887, "run_id": "N2--none--nointro--r2", "sql": "SELECT id, kind, text FROM brief;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 6}
+{"ts": 1789674371.110477, "run_id": "N2--none--nointro--r2", "sql": "SELECT * FROM passage LIMIT 3;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789674375.5748868, "run_id": "N2--none--nointro--r2", "sql": "SELECT * FROM topic LIMIT 3;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789674375.671266, "run_id": "N2--none--nointro--r2", "sql": "SELECT * FROM covers LIMIT 3;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789674383.4931998, "run_id": "N2--none--nointro--r2", "sql": "SELECT * FROM article LIMIT 2;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 2}
+{"ts": 1789674389.5793548, "run_id": "N2--none--nointro--r2", "sql": "SELECT id, content FROM passage WHERE string::lowercase(content) CONTAINS 'climate';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789674393.3341591, "run_id": "N2--none--nointro--r2", "sql": "SELECT id, text FROM brief WHERE string::lowercase(text) CONTAINS 'climate';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 2}

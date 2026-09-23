@@ -1,0 +1,4 @@
+{"ts": 1789673987.096166, "run_id": "L1--no_nature--intro--r1", "sql": "SELECT id FROM article WHERE title = 'Quantum leap at Helios Labs';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 1}
+{"ts": 1789673990.4551911, "run_id": "L1--no_nature--intro--r1", "sql": "SELECT id, parent, order FROM passage WHERE parent = article:a1 ORDER BY order ASC;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 4}
+{"ts": 1789673993.686099, "run_id": "L1--no_nature--intro--r1", "sql": "INFO FOR TABLE passage;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789673996.5695412, "run_id": "L1--no_nature--intro--r1", "sql": "SELECT id, take FROM passage WHERE parent = article:a1 ORDER BY take ASC;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 4}

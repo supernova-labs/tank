@@ -1,0 +1,8 @@
+{"ts": 1789683901.852559, "run_id": "V1--minimal--nointro--r1", "sql": "SELECT * FROM article LIMIT 3;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789683905.04059, "run_id": "V1--minimal--nointro--r1", "sql": "SELECT status, count() FROM article GROUP BY status;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789683907.815876, "run_id": "V1--minimal--nointro--r1", "sql": "SELECT * FROM codebook LIMIT 20;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789683911.1613572, "run_id": "V1--minimal--nointro--r1", "sql": "SELECT * FROM status_code LIMIT 20;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789683916.773039, "run_id": "V1--minimal--nointro--r1", "sql": "SELECT * FROM status LIMIT 20;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789683919.3847308, "run_id": "V1--minimal--nointro--r1", "sql": "SELECT * FROM status:c_04;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789683924.7814069, "run_id": "V1--minimal--nointro--r1", "sql": "SELECT * FROM article WHERE status = 'c_11' OR status='c_23';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 7}
+{"ts": 1789683930.0381691, "run_id": "V1--minimal--nointro--r1", "sql": "SELECT * FROM event LIMIT 20;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}

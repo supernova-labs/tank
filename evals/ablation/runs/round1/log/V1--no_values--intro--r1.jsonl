@@ -1,0 +1,2 @@
+{"ts": 1789673786.214537, "run_id": "V1--no_values--intro--r1", "sql": "SELECT status, count() FROM article GROUP BY status;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789673788.876939, "run_id": "V1--no_values--intro--r1", "sql": "SELECT id FROM article WHERE status = 'spiked';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 2}

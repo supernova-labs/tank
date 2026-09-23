@@ -1,0 +1,5 @@
+{"ts": 1789675354.689152, "run_id": "N1--no_locator--intro--r3", "sql": "SELECT id FROM article WHERE body CONTAINS 'quantum';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789675356.164426, "run_id": "N1--no_locator--intro--r3", "sql": "SELECT id FROM passage WHERE content CONTAINS 'quantum';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789675357.531188, "run_id": "N1--no_locator--intro--r3", "sql": "SELECT id FROM factbox WHERE body CONTAINS 'quantum';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 2}
+{"ts": 1789675362.5187562, "run_id": "N1--no_locator--intro--r3", "sql": "SELECT id FROM article WHERE string::lowercase(body) CONTAINS 'quantum' AND body NOT CONTAINS 'quantum';", "allow_introspect": true, "refused": false, "ok": false, "error": "HTTP Error 400: Bad Request"}
+{"ts": 1789675364.5707579, "run_id": "N1--no_locator--intro--r3", "sql": "SELECT id FROM factbox WHERE string::lowercase(body) CONTAINS 'quantum' AND body NOT CONTAINS 'quantum';", "allow_introspect": true, "refused": false, "ok": false, "error": "HTTP Error 400: Bad Request"}

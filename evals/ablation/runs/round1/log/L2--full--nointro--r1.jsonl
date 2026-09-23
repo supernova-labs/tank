@@ -1,0 +1,2 @@
+{"ts": 1789673751.602887, "run_id": "L2--full--nointro--r1", "sql": "SELECT id, title FROM article WHERE title = 'Climate accord signed';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 1}
+{"ts": 1789673754.93446, "run_id": "L2--full--nointro--r1", "sql": "SELECT id, parent, take FROM passage WHERE parent = article:a6 ORDER BY take ASC LIMIT 3;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}

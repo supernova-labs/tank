@@ -1,0 +1,4 @@
+{"ts": 1789683941.048652, "run_id": "L1--minimal--nointro--r3", "sql": "SELECT id, title FROM article WHERE title = 'Helios processor milestone';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 1}
+{"ts": 1789683943.839788, "run_id": "L1--minimal--nointro--r3", "sql": "SELECT * FROM passage WHERE article = article:a9 ORDER BY order ASC;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789683946.8844008, "run_id": "L1--minimal--nointro--r3", "sql": "SELECT * FROM passage LIMIT 3;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789683949.793769, "run_id": "L1--minimal--nointro--r3", "sql": "SELECT id, seq FROM passage WHERE parent = article:a9 ORDER BY seq ASC;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 5}

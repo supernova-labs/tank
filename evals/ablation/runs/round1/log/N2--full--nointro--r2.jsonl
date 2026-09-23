@@ -1,0 +1,2 @@
+{"ts": 1789673770.946964, "run_id": "N2--full--nointro--r2", "sql": "SELECT id, text FROM brief WHERE string::contains(text, 'climate');", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 2}
+{"ts": 1789673774.3713129, "run_id": "N2--full--nointro--r2", "sql": "SELECT id, text FROM brief WHERE string::contains(string::lowercase(text), 'climate');", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 2}

@@ -1,0 +1,4 @@
+{"ts": 1789684074.017365, "run_id": "N2--none--intro--r1", "sql": "INFO FOR DB;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789684078.4839349, "run_id": "N2--none--intro--r1", "sql": "INFO FOR TABLE brief; INFO FOR TABLE factbox; INFO FOR TABLE passage; INFO FOR TABLE article;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789684084.536876, "run_id": "N2--none--intro--r1", "sql": "SELECT id, kind, text FROM brief LIMIT 5; SELECT id, heading, body FROM factbox LIMIT 5;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 10}
+{"ts": 1789684089.9747531, "run_id": "N2--none--intro--r1", "sql": "SELECT id, kind, text FROM brief WHERE text CONTAINS 'climate';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 3}

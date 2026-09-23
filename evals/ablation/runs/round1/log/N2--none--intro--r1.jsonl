@@ -1,0 +1,5 @@
+{"ts": 1789674285.187246, "run_id": "N2--none--intro--r1", "sql": "INFO FOR DB;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789674288.1980531, "run_id": "N2--none--intro--r1", "sql": "INFO FOR TABLE brief;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789674291.6254022, "run_id": "N2--none--intro--r1", "sql": "SELECT id, kind FROM brief WHERE string::lowercase(text) CONTAINS 'climate';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 2}
+{"ts": 1789674295.82597, "run_id": "N2--none--intro--r1", "sql": "INFO FOR TABLE passage;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789674304.035177, "run_id": "N2--none--intro--r1", "sql": "SELECT id, take, score FROM passage WHERE string::lowercase(content) CONTAINS 'climate';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}

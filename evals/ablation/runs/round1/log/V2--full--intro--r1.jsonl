@@ -1,0 +1,1 @@
+{"ts": 1789673693.667706, "run_id": "V2--full--intro--r1", "sql": "SELECT id FROM brief WHERE kind = 'chk';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 2}

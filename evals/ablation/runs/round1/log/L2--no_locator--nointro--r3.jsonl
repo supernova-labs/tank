@@ -1,0 +1,2 @@
+{"ts": 1789673947.4493399, "run_id": "L2--no_locator--nointro--r3", "sql": "SELECT id FROM article WHERE title = 'Climate accord signed';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 1}
+{"ts": 1789673950.17932, "run_id": "L2--no_locator--nointro--r3", "sql": "SELECT * FROM passage WHERE parent = article:a6;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 4}

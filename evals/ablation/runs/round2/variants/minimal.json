@@ -1,0 +1,29 @@
+{
+  "types": [
+    {
+      "name": "article",
+      "table": "article",
+      "text": "body"
+    },
+    {
+      "name": "passage",
+      "table": "passage",
+      "text": "content"
+    },
+    {
+      "name": "brief",
+      "table": "brief",
+      "text": "text"
+    },
+    {
+      "name": "factbox",
+      "table": "factbox",
+      "text": "body"
+    },
+    {
+      "name": "topic",
+      "table": "topic",
+      "text": null
+    }
+  ]
+}

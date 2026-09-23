@@ -1,0 +1,2 @@
+{"ts": 1789675244.4685388, "run_id": "L2--no_values--nointro--r2", "sql": "SELECT id FROM article WHERE title = 'Accord after marathon talks';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 1}
+{"ts": 1789675247.769639, "run_id": "L2--no_values--nointro--r2", "sql": "SELECT id, parent, cut FROM passage WHERE parent = article:a6 ORDER BY cut ASC LIMIT 3;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}

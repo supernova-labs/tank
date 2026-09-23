@@ -1,0 +1,5 @@
+{"ts": 1789684142.60875, "run_id": "V2--none--nointro--r3", "sql": "SELECT * FROM factbox LIMIT 5;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 5}
+{"ts": 1789684145.693849, "run_id": "V2--none--nointro--r3", "sql": "SELECT id, type FROM passage LIMIT 20;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 10}
+{"ts": 1789684149.869743, "run_id": "V2--none--nointro--r3", "sql": "SELECT * FROM passage LIMIT 3;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789684152.940806, "run_id": "V2--none--nointro--r3", "sql": "SELECT * FROM brief LIMIT 5;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 5}
+{"ts": 1789684156.5275671, "run_id": "V2--none--nointro--r3", "sql": "SELECT id, kind, text FROM brief ORDER BY id;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 12}

@@ -1,0 +1,242 @@
+[
+ {
+  "run_id": "T1--declarative--r1",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--declarative--r2",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--declarative--r3",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--declarative--r5",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--declarative--r4",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--typed--r1",
+  "final_exact": true,
+  "submissions_used": 2,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--typed--r4",
+  "final_exact": true,
+  "submissions_used": 2,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--typed--r2",
+  "final_exact": true,
+  "submissions_used": 2,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--typed--r3",
+  "final_exact": true,
+  "submissions_used": 2,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--declarative--r1",
+  "final_exact": true,
+  "submissions_used": 2,
+  "gave_up": false
+ },
+ {
+  "run_id": "T1--typed--r5",
+  "final_exact": true,
+  "submissions_used": 2,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--declarative--r3",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--declarative--r5",
+  "final_exact": true,
+  "submissions_used": 2,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--declarative--r4",
+  "final_exact": true,
+  "submissions_used": 2,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--typed--r1",
+  "final_exact": true,
+  "submissions_used": 2,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--typed--r2",
+  "final_exact": true,
+  "submissions_used": 2,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--typed--r3",
+  "final_exact": true,
+  "submissions_used": 2,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--declarative--r1",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--typed--r4",
+  "final_exact": true,
+  "submissions_used": 2,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--declarative--r2",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--typed--r5",
+  "final_exact": true,
+  "submissions_used": 2,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--declarative--r3",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T2--declarative--r2",
+  "final_exact": true,
+  "submissions_used": 2,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--declarative--r4",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--declarative--r5",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--typed--r1",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--typed--r3",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--typed--r2",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--typed--r5",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T3--typed--r4",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--declarative--r2",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--declarative--r4",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--declarative--r3",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--declarative--r5",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--declarative--r1",
+  "final_exact": true,
+  "submissions_used": 2,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--typed--r1",
+  "final_exact": true,
+  "submissions_used": 2,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--typed--r3",
+  "final_exact": true,
+  "submissions_used": 1,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--typed--r2",
+  "final_exact": true,
+  "submissions_used": 2,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--typed--r5",
+  "final_exact": true,
+  "submissions_used": 2,
+  "gave_up": false
+ },
+ {
+  "run_id": "T4--typed--r4",
+  "final_exact": true,
+  "submissions_used": 2,
+  "gave_up": false
+ }
+]

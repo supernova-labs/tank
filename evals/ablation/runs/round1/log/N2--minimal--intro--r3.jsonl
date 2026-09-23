@@ -1,0 +1,3 @@
+{"ts": 1789674139.5776389, "run_id": "N2--minimal--intro--r3", "sql": "SELECT id FROM passage WHERE content CONTAINS 'climate';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789674141.828544, "run_id": "N2--minimal--intro--r3", "sql": "SELECT id FROM brief WHERE text CONTAINS 'climate';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 2}
+{"ts": 1789674145.619254, "run_id": "N2--minimal--intro--r3", "sql": "SELECT id, content FROM passage;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 8}

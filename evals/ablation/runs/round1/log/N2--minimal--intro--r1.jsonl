@@ -1,0 +1,6 @@
+{"ts": 1789674132.768477, "run_id": "N2--minimal--intro--r1", "sql": "INFO FOR DB;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789674135.794208, "run_id": "N2--minimal--intro--r1", "sql": "INFO FOR TABLE brief; INFO FOR TABLE passage; INFO FOR TABLE article;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789674144.302964, "run_id": "N2--minimal--intro--r1", "sql": "SELECT id, kind FROM brief;", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 6}
+{"ts": 1789674150.517508, "run_id": "N2--minimal--intro--r1", "sql": "SELECT id, content FROM passage WHERE content CONTAINS 'climate';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789674150.629739, "run_id": "N2--minimal--intro--r1", "sql": "SELECT id, text, kind FROM brief WHERE text CONTAINS 'climate';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 2}
+{"ts": 1789674154.630037, "run_id": "N2--minimal--intro--r1", "sql": "SELECT id, content FROM passage WHERE string::lowercase(content) CONTAINS 'climate';", "allow_introspect": true, "refused": false, "ok": true, "n_rows": 0}

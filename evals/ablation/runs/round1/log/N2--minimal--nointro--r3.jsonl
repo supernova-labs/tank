@@ -1,0 +1,7 @@
+{"ts": 1789674217.315876, "run_id": "N2--minimal--nointro--r3", "sql": "SELECT id, content FROM passage WHERE content CONTAINS 'climate'", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789674218.562419, "run_id": "N2--minimal--nointro--r3", "sql": "SELECT id, text FROM brief WHERE text CONTAINS 'climate'", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 2}
+{"ts": 1789674222.541644, "run_id": "N2--minimal--nointro--r3", "sql": "SELECT id, content FROM passage LIMIT 20", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 8}
+{"ts": 1789674226.509388, "run_id": "N2--minimal--nointro--r3", "sql": "SELECT * FROM brief LIMIT 20", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 6}
+{"ts": 1789674227.768696, "run_id": "N2--minimal--nointro--r3", "sql": "SELECT id, body FROM article WHERE body CONTAINS 'climate'", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 2}
+{"ts": 1789674232.641792, "run_id": "N2--minimal--nointro--r3", "sql": "SELECT * FROM passage LIMIT 20", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 8}
+{"ts": 1789674239.878844, "run_id": "N2--minimal--nointro--r3", "sql": "SELECT count() FROM passage GROUP ALL", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 1}

@@ -1,0 +1,3 @@
+{"ts": 1789673847.8337522, "run_id": "L2--no_values--nointro--r1", "sql": "SELECT id FROM article WHERE title = 'Climate accord signed';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 1}
+{"ts": 1789673851.594166, "run_id": "L2--no_values--nointro--r1", "sql": "SELECT id, parent, index, order FROM passage WHERE parent = article:a6 ORDER BY index LIMIT 5;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 4}
+{"ts": 1789673854.927008, "run_id": "L2--no_values--nointro--r1", "sql": "SELECT * FROM passage WHERE parent = article:a6;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 4}

@@ -1,0 +1,6 @@
+{"ts": 1789683971.7618518, "run_id": "N2--minimal--nointro--r1", "sql": "SELECT * FROM passage LIMIT 3;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789683974.865031, "run_id": "N2--minimal--nointro--r1", "sql": "SELECT * FROM brief LIMIT 3;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789683976.129686, "run_id": "N2--minimal--nointro--r1", "sql": "SELECT * FROM factbox LIMIT 3;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789683979.9821131, "run_id": "N2--minimal--nointro--r1", "sql": "SELECT * FROM topic LIMIT 10;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 4}
+{"ts": 1789683991.004599, "run_id": "N2--minimal--nointro--r1", "sql": "SELECT id, content FROM passage WHERE string::lowercase(content) CONTAINS 'climate';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789683992.3822742, "run_id": "N2--minimal--nointro--r1", "sql": "SELECT id, text FROM brief WHERE string::lowercase(text) CONTAINS 'climate';", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}

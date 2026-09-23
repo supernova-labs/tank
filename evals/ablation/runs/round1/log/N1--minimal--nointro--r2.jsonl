@@ -1,0 +1,4 @@
+{"ts": 1789674206.182195, "run_id": "N1--minimal--nointro--r2", "sql": "SELECT id FROM article WHERE string::contains(body, 'quantum');", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}
+{"ts": 1789674207.461087, "run_id": "N1--minimal--nointro--r2", "sql": "SELECT id FROM passage WHERE string::contains(content, 'quantum');", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 0}
+{"ts": 1789674212.512785, "run_id": "N1--minimal--nointro--r2", "sql": "SELECT * FROM article LIMIT 1;", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 1}
+{"ts": 1789674216.03921, "run_id": "N1--minimal--nointro--r2", "sql": "SELECT id, status FROM article WHERE string::contains(body, 'quantum');", "allow_introspect": false, "refused": false, "ok": true, "n_rows": 3}

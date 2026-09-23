@@ -33,6 +33,8 @@ The two real challenges: **indexing and ontology** (what the library validates �
 from tank import Attr, Ontology, StableId, UnitType
 
 ontology = Ontology(
+    name="assessments",   # who this declaration is
+    version="0.1.0",      # and which revision of it
     types=[
         UnitType(
             "report",
@@ -41,12 +43,24 @@ ontology = Ontology(
             text="body_text",
             attrs=[
                 Attr("status", "string", values=["current", "revoked"]),
+                # Opaque codes: declare what they MEAN, not just which exist.
+                # An agent can already discover the list from the data; in an
+                # ablation, the bare list cost six queries to decode where the
+                # mapping cost one.
+                Attr("stage", "string", values={"s_02": "in review", "s_07": "signed off"}),
                 Attr("issued_at", "datetime"),
             ],
         ),
     ],
 )
 ```
+
+`name` and `version` are required and have no default: they are the human half
+of the stamp that says *which* declaration a later observation was made
+against. `ontology.stamp()` pairs them with a digest of the declaration itself
+(`assessments@0.1.0+0d7136718992`), so reordering your types for readability
+does not change the identity, and editing them without bumping `version` does
+not go unnoticed.
 
 An internally inconsistent ontology (a relation pointing at an undeclared type, a scope without its relation, a vector without a dimension…) **blows up at import time** with every `ONT-*` code at once — the build breaks before any database connection exists.
 

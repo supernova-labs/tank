@@ -315,6 +315,8 @@ TASKS = [
 
 def build() -> Ontology:
     return Ontology(
+        name="ablation_news",
+        version="2.0.0",
         types=[
             UnitType(
                 "article",

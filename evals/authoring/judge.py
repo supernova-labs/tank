@@ -17,6 +17,7 @@ import importlib.util
 import json
 import time
 import traceback
+from contextlib import contextmanager
 from pathlib import Path
 
 HERE = Path(__file__).parent
@@ -31,9 +32,46 @@ def load_module(path: Path, name: str):
     return module
 
 
+@contextmanager
+def legacy_stamp(name: str, version: str):
+    """Fill in `Ontology.name`/`version` for submissions written before they existed.
+
+    The committed submissions are *experiment data*: they are what agents
+    actually wrote, under the prompts of their round. Editing 137 files to
+    satisfy a validator that shipped later would silently rewrite the record,
+    and the corpus would stop being evidence of anything. So the shim lives
+    here, fills in only the missing pair, and every judged result records
+    whether it fired (`stamp_injected`). A submission that sets them itself is
+    left alone.
+    """
+    from tank import Ontology
+
+    original = Ontology.__init__
+    fired: list[bool] = []
+
+    def patched(self, *args, **kwargs):
+        fired.append(any(k not in kwargs for k in ("name", "version")))
+        kwargs.setdefault("name", name)
+        kwargs.setdefault("version", version)
+        original(self, *args, **kwargs)
+
+    Ontology.__init__ = patched
+    try:
+        yield fired
+    finally:
+        Ontology.__init__ = original
+
+
 def normalize(dump: dict) -> dict:
-    """Sort every named collection so declaration order never counts as a diff."""
+    """Sort every named collection so declaration order never counts as a diff.
+
+    The stamp is dropped: it is not part of what the eval asks an agent to get
+    right, and leaving it in would make every shimmed submission match the gold
+    on two fields it never wrote.
+    """
     out = json.loads(json.dumps(dump, default=str))
+    out.pop("name", None)
+    out.pop("version", None)
     out["types"] = sorted(out.get("types") or [], key=lambda t: t["name"])
     for unit_type in out["types"]:
         unit_type["attrs"] = sorted(unit_type.get("attrs") or [], key=lambda a: a["name"])
@@ -121,7 +159,9 @@ def main() -> int:
 
     result = {"constructs": False, "arm_ok": True, "exact": False, "diff_count": None}
     try:
-        module = load_module(Path(args.submission), f"submission_{args.run_id}_{prior}")
+        with legacy_stamp(f"submission_{args.run_id}", "0") as injected:
+            module = load_module(Path(args.submission), f"submission_{args.run_id}_{prior}")
+        result["stamp_injected"] = any(injected)
         from tank import Ontology
 
         ontology = getattr(module, "ontology", None)

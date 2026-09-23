@@ -16,6 +16,8 @@ from tank import (
 
 def build() -> Ontology:
     return Ontology(
+        name="gold_task3",
+        version="1.0.0",
         types=[
             UnitType("author", table="author", attrs=[Attr("name", "string")]),
             UnitType(

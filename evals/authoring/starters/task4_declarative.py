@@ -3,6 +3,8 @@
 from tank import Attr, Locator, Ontology, Relation, StableId, UnitType
 
 ontology = Ontology(
+    name="starter_task4",
+    version="1.0.0",
     types=[
         UnitType(
             "manual",

@@ -19,6 +19,8 @@ from tank import (
 
 def build() -> Ontology:
     return Ontology(
+        name="ablation_news",
+        version="1.0.0",
         types=[
             UnitType(
                 "article",

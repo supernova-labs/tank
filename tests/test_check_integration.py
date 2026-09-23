@@ -94,6 +94,8 @@ def fail_codes(report) -> set[str]:
 
 def minimal_ontology(table: str = "technical_assessment") -> Ontology:
     return Ontology(
+        name="minimal",
+        version="0.1.0",
         types=[
             UnitType(
                 "report",
@@ -143,6 +145,8 @@ async def test_minimal_schemaless_variant(database):
 async def test_minimal_vocabulary_drift_warns(database):
     seed(database, "minimal")
     ontology = Ontology(
+        name="minimal",
+        version="0.1.0",
         types=[
             UnitType(
                 "report",
@@ -150,7 +154,7 @@ async def test_minimal_vocabulary_drift_warns(database):
                 text="body_text",
                 attrs=[Attr("status", "string", values=["current"])],  # narrower than data
             )
-        ]
+        ],
     )
     report = await check(ontology, database)
     assert "WARN" in statuses(report, "ATTR-010")
@@ -315,6 +319,8 @@ async def test_null_does_not_masquerade_as_a_vocabulary_violation(database):
     """
     sql(database, NULL_SEED)
     ontology = Ontology(
+        name="minimal",
+        version="0.1.0",
         types=[
             UnitType(
                 "report",

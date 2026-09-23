@@ -5,6 +5,8 @@ from tank import Attr, Locator, Ontology, Relation, StableId, UnitType
 
 def build() -> Ontology:
     return Ontology(
+        name="gold_task4",
+        version="1.0.0",
         types=[
             UnitType(
                 "manual",

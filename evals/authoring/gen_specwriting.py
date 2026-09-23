@@ -14,9 +14,9 @@ Reuses the authoring judge and golds. Usage:
 """
 
 import argparse
-import os
 import importlib.util
 import json
+import os
 from pathlib import Path
 
 HERE = Path(__file__).parent

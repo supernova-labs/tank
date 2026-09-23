@@ -3,6 +3,8 @@
 from tank import Attr, Locator, Ontology, StableId, UnitType
 
 ontology = Ontology(
+    name="minimal",
+    version="0.1.0",
     types=[
         UnitType(
             "report",

@@ -17,6 +17,8 @@ grounded in behavior verified against SurrealDB 2.6.5 and 3.1.6:
 
 from __future__ import annotations
 
+import re
+
 from tank.introspect import DbInfo, Introspector, TableInfo, is_safe_identifier
 from tank.ontology import Ontology, Relation, UnitType
 from tank.report import Report
@@ -428,10 +430,11 @@ async def _check_relation(
 ) -> None:
     subject = f"relation:{relation.name}"
     from_table = ontology.type_named(relation.from_).table
-    to_table = ontology.type_named(relation.to).table
+    to_tables = [ontology.type_named(t).table for t in relation.targets()]
+    to_spec = " | ".join(to_tables)  # SurrealQL spelling of several OUT tables
 
     if relation.kind == "field_link":
-        await _check_field_link(intro, db, relation, from_table, to_table, report)
+        await _check_field_link(intro, db, relation, from_table, to_tables, report)
         return
 
     edge_table = relation.table or relation.name
@@ -455,8 +458,9 @@ async def _check_relation(
         problems = []
         if table_ddl.in_tables and from_table not in table_ddl.in_tables:
             problems.append(f"IN is {table_ddl.in_tables}, expected {from_table!r}")
-        if table_ddl.out_tables and to_table not in table_ddl.out_tables:
-            problems.append(f"OUT is {table_ddl.out_tables}, expected {to_table!r}")
+        missing_out = [t for t in to_tables if t not in table_ddl.out_tables]
+        if table_ddl.out_tables and missing_out:
+            problems.append(f"OUT is {table_ddl.out_tables}, missing {missing_out}")
         if problems:
             report.add(
                 "REL-002",
@@ -464,7 +468,7 @@ async def _check_relation(
                 subject,
                 f"edge {edge_table!r} direction contradicts the ontology: "
                 + "; ".join(problems)
-                + f" (declared {relation.from_} -> {relation.to})",
+                + f" (declared {relation.from_} -> {' | '.join(relation.targets())})",
                 table=edge_table,
             )
         else:
@@ -472,7 +476,7 @@ async def _check_relation(
                 "REL-002",
                 "PASS",
                 subject,
-                f"edge {edge_table!r} is TYPE RELATION {from_table} -> {to_table}; the server "
+                f"edge {edge_table!r} is TYPE RELATION {from_table} -> {to_spec}; the server "
                 "enforces direction on write",
                 table=edge_table,
             )
@@ -487,19 +491,19 @@ async def _check_relation(
                 f"edge {edge_table!r} has no IN/OUT constraint "
                 f"({'TYPE RELATION without IN/OUT' if table_ddl.kind == 'relation' else 'TYPE ANY'}) "
                 "and is empty — direction cannot be verified; recommend "
-                f"DEFINE TABLE {edge_table} TYPE RELATION IN {from_table} OUT {to_table}",
+                f"DEFINE TABLE {edge_table} TYPE RELATION IN {from_table} OUT {to_spec}",
                 table=edge_table,
             )
         else:
             pairs = set(await intro.edge_endpoint_tables(edge_table))
-            bad = {p for p in pairs if p != (from_table, to_table)}
+            bad = {p for p in pairs if p[0] != from_table or p[1] not in to_tables}
             if bad:
                 report.add(
                     "REL-002",
                     "FAIL",
                     subject,
                     f"edge {edge_table!r} (no IN/OUT constraint) has sampled endpoints "
-                    f"{sorted(bad)}, expected ({from_table!r}, {to_table!r})",
+                    f"{sorted(bad)}, expected ({from_table!r}, {to_spec!r})",
                     table=edge_table,
                 )
             else:
@@ -509,7 +513,7 @@ async def _check_relation(
                     subject,
                     f"edge {edge_table!r} endpoints match by sampling, but it has no "
                     "IN/OUT constraint — nothing defends direction on write; recommend "
-                    f"DEFINE TABLE {edge_table} TYPE RELATION IN {from_table} OUT {to_table}",
+                    f"DEFINE TABLE {edge_table} TYPE RELATION IN {from_table} OUT {to_spec}",
                     table=edge_table,
                 )
     else:
@@ -576,10 +580,11 @@ async def _check_field_link(
     db: DbInfo,
     relation: Relation,
     from_table: str,
-    to_table: str,
+    to_tables: list[str],
     report: Report,
 ) -> None:
     subject = f"relation:{relation.name}"
+    expected = f"record<{'|'.join(to_tables)}>"
     link_field = relation.field
     assert link_field is not None
     if not is_safe_identifier(link_field):
@@ -618,21 +623,38 @@ async def _check_field_link(
             table=from_table,
         )
         return
-    if defined.type and f"record<{to_table}>" in defined.type:
+    actual_targets = _record_targets(defined.type)
+    # Equality, not containment. A column that accepts MORE tables than the
+    # declaration names is not slack, it is a contract the agent cannot see: the
+    # declaration is what an agent reads to decide what a traversal returns, so
+    # an undeclared target is a row it will mishandle. The message prints the
+    # type that was OBSERVED, never the one derived from the declaration —
+    # otherwise a PASS asserts the shape it was looking for rather than the one
+    # it found.
+    if actual_targets is not None and actual_targets == set(to_tables):
         report.add(
             "REL-003",
             "PASS",
             subject,
-            f"field_link {link_field!r} on {from_table!r} is typed record<{to_table}>",
+            f"field_link {link_field!r} on {from_table!r} is {defined.type!r}",
             table=from_table,
         )
-    elif defined.type and "record" in defined.type:
+    elif actual_targets is not None and set(to_tables) < actual_targets:
         report.add(
             "REL-003",
             "FAIL",
             subject,
-            f"field_link {link_field!r} on {from_table!r} is {defined.type!r}, expected "
-            f"record<{to_table}>",
+            f"field_link {link_field!r} on {from_table!r} is {defined.type!r}, which accepts "
+            f"{sorted(actual_targets - set(to_tables))} on top of the declared {expected} — "
+            "declare every target the column can hold, or narrow the column",
+            table=from_table,
+        )
+    elif actual_targets is not None:
+        report.add(
+            "REL-003",
+            "FAIL",
+            subject,
+            f"field_link {link_field!r} on {from_table!r} is {defined.type!r}, expected {expected}",
             table=from_table,
         )
     else:
@@ -644,6 +666,19 @@ async def _check_field_link(
             "link at all",
             table=from_table,
         )
+
+
+_RECORD_RE = re.compile(r"record<([^>]*)>")
+
+
+def _record_targets(normalized_type: str | None) -> set[str] | None:
+    """``none|record<a|b>`` -> ``{"a", "b"}``; ``None`` when the type is not a record link."""
+    if not normalized_type:
+        return None
+    match = _RECORD_RE.search(normalized_type)
+    if not match:
+        return None
+    return {t.strip() for t in match.group(1).split("|") if t.strip()}
 
 
 # ------------------------------------------------------------------- freshness

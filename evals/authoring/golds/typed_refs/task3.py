@@ -4,6 +4,10 @@ from datetime import datetime
 from typing import Annotated, Literal
 
 from tank import (
+    Ontology,
+    Scope,
+)
+from tank.typed import (
     Ages,
     Edge,
     Embed,
@@ -11,8 +15,6 @@ from tank import (
     Key,
     Link,
     Named,
-    Ontology,
-    Scope,
     Searchable,
     Text,
     Unit,

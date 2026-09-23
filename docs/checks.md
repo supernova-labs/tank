@@ -23,7 +23,7 @@ These run **in the `Ontology` constructor**, on any import. Failure = `OntologyE
 | Code | What it verifies | How to fix |
 |---|---|---|
 | `ONT-001` | Unique names across types, relations and scopes | Rename the duplicate |
-| `ONT-002` | `Relation.from_`/`to` reference declared types | Declare the missing type or fix the name |
+| `ONT-002` | `Relation.from_`/`to` reference declared types (`to` may list several) | Declare the missing type or fix the name |
 | `ONT-003` | `Scope.via` references a declared relation | Declare the relation or fix the name |
 | `ONT-005` | No duplicate attrs within a type | Remove the duplicate |
 | `ONT-008` | `Freshness.unit_type` references a declared type | Fix the type name |
@@ -55,8 +55,8 @@ The real dichotomy is **per field** (verified behavior on SurrealDB 2.x and 3.x)
 | Code | What it verifies | Possible states |
 |---|---|---|
 | `REL-001` | **The edge table exists** ("relation declares table X, which does not exist in the database") | implicit PASS via REL-002 / FAIL |
-| `REL-002` | Edge direction. With `TYPE RELATION IN/OUT`: structural comparison — and the server **enforces direction on write**. Without an IN/OUT constraint (`TYPE ANY` implicit edges, or `TYPE RELATION` declared with no `IN`/`OUT` clause — nothing enforces direction in either case): endpoint sampling via `record::tb(in/out)` — right endpoints = WARN recommending an explicit `TYPE RELATION IN x OUT y`; wrong = FAIL; empty = VACUOUS | PASS / WARN / FAIL / VACUOUS |
-| `REL-003` | `field_link`: the field on the source type exists and is `record<target-table>` | PASS / WARN / FAIL / VACUOUS |
+| `REL-002` | Edge direction. With `TYPE RELATION IN/OUT`: structural comparison — and the server **enforces direction on write**. Without an IN/OUT constraint (`TYPE ANY` implicit edges, or `TYPE RELATION` declared with no `IN`/`OUT` clause — nothing enforces direction in either case): endpoint sampling via `record::tb(in/out)` — right endpoints = WARN recommending an explicit `TYPE RELATION IN x OUT y`; wrong = FAIL; empty = VACUOUS. A relation with several targets (`dst=Source \| Note`) requires every declared target in `OUT` | PASS / WARN / FAIL / VACUOUS |
+| `REL-003` | `field_link`: the field on the source type exists and is `record<target-table>` — with several targets (`Link[Source, "Note"]`), the DDL must admit every declared one (`record<source \| note>`) | PASS / WARN / FAIL / VACUOUS |
 | `REL-004` | The `Weight` field exists on the edge (DEFINE or sampling) | PASS / WARN / FAIL / VACUOUS |
 
 ## `VEC-*` — vector search
@@ -89,4 +89,4 @@ The ontology declares the *capability* (`Vector(field, dim, metric)`); the index
 
 ## What `tank check` deliberately does NOT verify
 
-Printed in every report, the honesty list: semantics of names; the real identity of the embedding model (only the declared label in 0.1); content quality/completeness; search/ranking behavior (no access queries are executed); the *semantic* direction of relations (structure ≠ meaning); sampling coverage (samples read the first N rows, so a value that only occurs in recent rows can be missed); declared-but-inert constructs (`nature`, `StableId.version_fields` — recorded, not yet consumed by any check); and the index-location bet described under `VEC-*`. A validator that stays silent about its blind spots manufactures false confidence.
+Printed in every report, the honesty list: semantics of names; the real identity of the embedding model (only the declared label in 0.1); content quality/completeness; search/ranking behavior (no access queries are executed); the *semantic* direction of relations (structure ≠ meaning); sampling coverage (samples read the first N rows, so a value that only occurs in recent rows can be missed); declaration identity (`stamp()` identifies the declaration, never the data or the code behind it); declared-but-inert constructs (`nature`, `StableId.version_fields` — recorded, not yet consumed by any check); and the index-location bet described under `VEC-*`. A validator that stays silent about its blind spots manufactures false confidence.

@@ -22,7 +22,10 @@ they are 11 MB of JSON and Python that pack to well under 1 MB.
 `runs/*/submissions/*.py` in particular are **experiment data, not project
 code**: they are what agents actually wrote under the prompts of their round.
 They are never edited to satisfy a later version of the library. When the
-library changes under them, the judge adapts and records that it did.
+library changes under them, the judge adapts and records that it did — see
+`legacy_stamp` in `authoring/judge.py`, which fills in the `Ontology`
+name/version that did not exist when those submissions were written and sets
+`stamp_injected` on every result where it fired.
 
 ## The ablation corpus, and what it does not exercise
 

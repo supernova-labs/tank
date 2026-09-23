@@ -25,6 +25,8 @@ def build(
     feed_field: str = "feed",
 ) -> Ontology:
     return Ontology(
+        name="news_mini",
+        version="0.1.0",
         types=[
             UnitType(
                 "news",

@@ -5,6 +5,8 @@ from tank import Attr, Ontology, StableId, UnitType
 
 def build() -> Ontology:
     return Ontology(
+        name="gold_task1",
+        version="1.0.0",
         types=[
             UnitType(
                 "ticket",

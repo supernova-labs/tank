@@ -36,6 +36,11 @@ NOT_VERIFIED: list[str] = [
         "in the declaration but no 0.1 check consumes them yet"
     ),
     (
+        "declaration identity — `Ontology.stamp()` identifies the declaration, never the "
+        "data or the code behind it: content that changes without the declaration changing "
+        "carries the same stamp, and `version` is whatever the author typed"
+    ),
+    (
         "index location — 0.1 requires ANN/FTS indexes in the consumer's own tables; a "
         "Tank-owned index projection would move these checks' target"
     ),

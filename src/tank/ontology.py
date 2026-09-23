@@ -28,6 +28,8 @@ Design notes:
 
 from __future__ import annotations
 
+import hashlib
+import json
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -40,6 +42,7 @@ __all__ = [
     "Ontology",
     "OntologyError",
     "Relation",
+    "Rendered",
     "Scope",
     "StableId",
     "UnitType",
@@ -77,7 +80,17 @@ class _PosModel(BaseModel):
     """Pydantic model that also accepts positional args, in field-declaration order.
 
     Keeps the ergonomic style of the vision doc: ``UnitType("report", table=...)``.
+
+    ``extra="forbid"`` is load-bearing, not tidiness: pydantic's default
+    (``extra="ignore"``) accepts an unknown keyword and drops it silently, so a
+    declaration that looks accepted can be missing the thing the author wrote.
+    That is the forbidden failure mode of this project — a wrong answer given
+    with full confidence — reproduced inside the declaration itself.
+    ``Locator`` is deliberately not affected: it is free-form by design and
+    keeps ``extra="allow"``.
     """
+
+    model_config = ConfigDict(extra="forbid")
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         if args:
@@ -199,6 +212,14 @@ class Vector(_PosModel):
     model: str | None = None
 
 
+class Rendered(BaseModel):
+    """The unit's text is *computed* by a method on the typed class (``@rendered_text``),
+    not read from a field — entity cards, fact sentences. The declaration only records
+    the method name; the JSON export says "computed, see the class"."""
+
+    method: str = Field(min_length=1)
+
+
 class FullText(_PosModel):
     """Declares that a unit type is full-text searchable on one field.
 
@@ -221,7 +242,7 @@ class UnitType(_PosModel):
     table: str = Field(min_length=1)
     nature: Nature = "original"
     id: StableId | None = None
-    text: str | list[str] | None = None
+    text: str | list[str] | Rendered | None = None
     attrs: list[Attr] = Field(default_factory=list)
     locator: Locator | None = None
     vector: Vector | None = None
@@ -235,6 +256,7 @@ class UnitType(_PosModel):
             fields.add(self.text)
         elif isinstance(self.text, list):
             fields.update(self.text)
+        # Rendered text references no field: nothing to verify structurally
         if self.id:
             fields.update(self.id.fields)
             fields.update(self.id.version_fields)
@@ -266,20 +288,26 @@ class Relation(_PosModel):
     carry a ``weight``. ``kind="field_link"``: a record field on the *from_* type
     pointing at *to* (``field`` is required; no weight — there is nowhere to
     store it).
-    ``from_``/``to`` name **unit types**, not tables.
+    ``from_``/``to`` name **unit types**, not tables. ``to`` may list several
+    types (``mentions: note -> source | note``); ``targets()`` normalizes it.
     """
 
     name: str = Field(min_length=1)
     from_: str = Field(min_length=1)
-    to: str = Field(min_length=1)
+    to: str | list[str] = Field(min_length=1)
     kind: RelationKind = "edge"
     table: str | None = None
     field: str | None = None
     weight: Weight | None = None
     description: str | None = None
 
+    def targets(self) -> list[str]:
+        return [self.to] if isinstance(self.to, str) else list(self.to)
+
     @model_validator(mode="after")
     def _kind_shape(self) -> Relation:
+        if isinstance(self.to, list) and (not self.to or any(not t for t in self.to)):
+            raise ValueError(f"relation {self.name!r}: `to` must name at least one unit type")
         if self.kind == "edge":
             if self.table is None:
                 self.table = self.name
@@ -319,12 +347,78 @@ class Freshness(_PosModel):
     decay: str = Field(min_length=1)
 
 
+#: Paths whose list order carries meaning and must survive canonicalization.
+#: A path is the dotted chain of *field names*, with list indices elided.
+_ORDER_IS_MEANING: frozenset[str] = frozenset(
+    {
+        "types.text",  # concatenation order of the text fields
+        "types.id.fields",  # the identity tuple
+        "types.id.version_fields",  # the reprocessing tuple
+        "relations.weight.range",  # (low, high)
+    }
+)
+
+#: Paths whose list order is presentation only, and is therefore sorted away.
+_ORDER_IS_NOISE: frozenset[str] = frozenset(
+    {
+        "types",
+        "types.attrs",
+        "types.attrs.values",
+        "relations",
+        "relations.to",  # a multi-target link is a set of targets; order is not meaning
+        "scopes",
+        "freshness",
+    }
+)
+
+
+def _canonical(value: Any, path: str) -> Any:
+    """Rewrite a dumped ontology into its canonical form.
+
+    Mappings are always key-sorted — JSON object order is never meaning. Lists
+    are sorted only where the path says the order is presentation; where order
+    *is* the meaning, it survives untouched.
+
+    An unclassified list path raises instead of guessing. That is deliberate:
+    guessing either way corrupts the stamp. Sorting an order-bearing list makes
+    two different declarations hash the same; keeping an order-free list makes
+    one declaration hash two ways after a cosmetic reorder. A new list-valued
+    field must be classified into one of the two sets above before it can be
+    part of the fingerprint.
+    """
+    if isinstance(value, dict):
+        return {k: _canonical(value[k], f"{path}.{k}" if path else k) for k in sorted(value)}
+    if isinstance(value, tuple):
+        # Tuples are fixed-arity by construction; order is always meaning.
+        return [_canonical(v, path) for v in value]
+    if isinstance(value, list):
+        items = [_canonical(v, path) for v in value]
+        if path in _ORDER_IS_MEANING:
+            return items
+        if path in _ORDER_IS_NOISE:
+            return sorted(items, key=lambda i: json.dumps(i, sort_keys=True, default=str))
+        raise RuntimeError(
+            f"ontology fingerprint: list path {path!r} is not classified as order-meaning "
+            "or order-noise. Add it to `_ORDER_IS_MEANING` or `_ORDER_IS_NOISE` in "
+            "tank.ontology — the stamp cannot be computed until someone decides."
+        )
+    return value
+
+
 class Ontology(_PosModel):
     """The full declaration. Construction runs the static ONT-* checks and raises
     :class:`OntologyError` (with every violation) if the declaration is
     internally inconsistent — a broken ontology fails the build with no database
-    involved."""
+    involved.
 
+    ``name`` and ``version`` are required and carry no default. They are the
+    human half of the stamp that identifies *which* declaration a later
+    observation was made against; a default would mean every project that forgot
+    to set them shares one identity, which is the same wrong answer given twice.
+    """
+
+    name: str = Field(min_length=1)
+    version: str = Field(min_length=1)
     types: list[UnitType] = Field(min_length=1)
     relations: list[Relation] = Field(default_factory=list)
     scopes: list[Scope] = Field(default_factory=list)
@@ -355,7 +449,8 @@ class Ontology(_PosModel):
 
         # ONT-002 — relations reference declared types
         for rel in self.relations:
-            for side, ref in (("from_", rel.from_), ("to", rel.to)):
+            refs = [("from_", rel.from_)] + [("to", t) for t in rel.targets()]
+            for side, ref in refs:
                 if ref not in types:
                     violations.append(
                         Violation(
@@ -427,6 +522,13 @@ class Ontology(_PosModel):
 
     # -- convenience -----------------------------------------------------------
 
+    @classmethod
+    def of(cls, *models: Any, **kwargs: Any) -> Ontology:
+        """Derive the ontology from typed ``Unit``/``Edge`` classes (see ``tank.typed``)."""
+        from tank.typed import build_ontology  # lazy: typed depends on this module
+
+        return build_ontology(*models, **kwargs)
+
     def type_named(self, name: str) -> UnitType:
         for unit_type in self.types:
             if unit_type.name == name:
@@ -437,3 +539,36 @@ class Ontology(_PosModel):
         """Export the declaration as JSON (the contract surface the skill reads)."""
         kwargs.setdefault("indent", 2)
         return self.model_dump_json(**kwargs)
+
+    # -- identity --------------------------------------------------------------
+
+    def canonical_json(self) -> str:
+        """The declaration in canonical form: key-sorted, order-noise sorted away.
+
+        Two declarations that differ only in the order things were written in
+        produce the same string; two that differ in anything an agent could act
+        on do not.
+        """
+        payload = _canonical(self.model_dump(exclude_none=True), "")
+        return json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+    def fingerprint(self) -> str:
+        """sha256 of :meth:`canonical_json` — the machine half of the stamp.
+
+        Stable across processes and across cosmetic reordering, which is what
+        makes it usable as a join key: a later observation can say *which*
+        declaration it was made against, and a reorder for readability does not
+        split the series in two for nothing. ``name`` and ``version`` are part
+        of the hashed payload, so two projects cannot collide by declaring the
+        same shape.
+        """
+        return hashlib.sha256(self.canonical_json().encode("utf-8")).hexdigest()
+
+    def stamp(self, digest_chars: int = 12) -> str:
+        """``name@version+<digest>`` — the form meant to be read by a human.
+
+        ``name@version`` is what the author controls and what a changelog talks
+        about; the digest is what catches the author who changed the declaration
+        and forgot to bump the version.
+        """
+        return f"{self.name}@{self.version}+{self.fingerprint()[:digest_chars]}"

@@ -42,7 +42,7 @@ def test_pydantic_shape_error_exits_2(tmp_path):
     bad = tmp_path / "ontology.py"
     bad.write_text(
         "from tank import Ontology, UnitType, Vector\n"
-        'ontology = Ontology(types=[UnitType("a", table="a", vector=Vector("emb", 0))])\n'
+        'ontology = Ontology(name="a", version="1", types=[UnitType("a", table="a", vector=Vector("emb", 0))])\n'
     )
     code = exit_code(["check", "--ontology", str(bad), "--ns", "n", "--db", "d"])
     assert code == 2
@@ -72,7 +72,7 @@ def test_load_ontology_sibling_import(tmp_path):
     (tmp_path / "ontology.py").write_text(
         "from helper import TABLE\n"
         "from tank import Ontology, UnitType\n"
-        'ontology = Ontology(types=[UnitType("report", table=TABLE)])\n'
+        'ontology = Ontology(name="m", version="1", types=[UnitType("report", table=TABLE)])\n'
     )
     ontology = load_ontology(str(tmp_path / "ontology.py"))
     assert ontology.type_named("report").table == "technical_assessment"

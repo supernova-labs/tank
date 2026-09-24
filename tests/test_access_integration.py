@@ -280,3 +280,75 @@ async def test_the_trail_answers_the_question_it_exists_for(migrated):
     everything = {str(r["id"]) for r in sync_sql("SELECT id FROM news;", NS, migrated)[0]["result"]}
     assert delivered == {"news:n1"}
     assert everything - delivered == {"news:n2"}
+
+
+# ------------------------------------------- the one place that writes SQL
+
+
+HOSTILE_IDS = [
+    ("statement terminator", "news:n1; REMOVE TABLE news; --"),
+    ("create a table", "news:n1; CREATE pwned:x SET owned = true; --"),
+    ("tamper with the trail", 'news:n1; UPDATE tank_access_event SET scope_value = "X"; --'),
+    ("exfiltrate", "news:n1; CREATE leak CONTENT (SELECT * FROM news)[0]; --"),
+    ("no drop counted", "news:n1 RETURN 1; CREATE pwned2 SET ok = true RETURN 1; --"),
+    ("backtick", "news:`a`b`"),
+    ("comment opener", "https://example.com/a"),
+    ("extra colons", "a:b:c"),
+    ("emoji", "news:🎉"),
+]
+
+
+@pytest.mark.parametrize(("label", "hostile"), HOSTILE_IDS, ids=[c[0] for c in HOSTILE_IDS])
+async def test_a_reference_id_cannot_run_sql(migrated, label, hostile):
+    """`Ref.id` is a record POINTER, so it cannot be quoted like a literal —
+    and that exception used to be an injection.
+
+    The ref rows go out as one multi-statement request, so a `;` inside an id
+    closed the statement and ran what followed. `Ref(id="news:n1; REMOVE TABLE
+    news; --")` dropped a table in the consumer's own database, and the drop
+    counter logged `refs_refused`: the damage done, reported as a benign
+    instrument failure.
+
+    `type::record(table, key)` takes both halves as ordinary values, so they go
+    through the same quoting as everything else.
+    """
+    registry = Registry(ontology())
+    sink = SurrealSink(execute)
+
+    @registry.access_tool(name="t", version="1.0.0", returns=Candidate, via="own")
+    async def t() -> list[Candidate]:
+        return [Candidate(type="news", id=hostile)]
+
+    before = set(sync_sql("INFO FOR DB;", NS, migrated)[0]["result"]["tables"])
+    async with session(registry, sink, ns=NS, db=migrated, run_id="r1"):
+        await t()
+    after = set(sync_sql("INFO FOR DB;", NS, migrated)[0]["result"]["tables"])
+
+    assert after == before, f"{label} created or removed a table: {after ^ before}"
+    assert "news" in after, "the consumer's own table survived"
+    assert not sync_sql("SELECT * FROM tank_access_event WHERE scope_value = 'X';", NS, migrated)[
+        0
+    ]["result"], "the trail was not rewritten"
+    # And it is not merely refused: the id is stored, verbatim, as a value.
+    assert sink.drops.total == 0, dict(sink.drops.reasons)
+    stored = sync_sql("SELECT unit_key FROM tank_access_ref;", NS, migrated)[0]["result"]
+    assert [r["unit_key"] for r in stored] == [hostile]
+
+
+async def test_a_non_finite_score_is_refused_rather_than_stored_as_absence(migrated):
+    """SurrealDB reads `inf` and `nan` as undefined variables and stores NONE, so
+    a score from a scorer that divided by zero would become indistinguishable
+    from a tool that does not score at all."""
+    registry = Registry(ontology())
+    sink = SurrealSink(execute)
+
+    @registry.access_tool(name="t", version="1.0.0", returns=Candidate, via="own")
+    async def t() -> list[Candidate]:
+        return [Candidate(type="news", id="news:n1", score=float("inf"))]
+
+    async with session(registry, sink, ns=NS, db=migrated, run_id="r1"):
+        await t()
+
+    assert sink.drops.reasons["unencodable_value"] == 1
+    rows = sync_sql("SELECT count() FROM tank_access_ref GROUP ALL;", NS, migrated)[0]["result"]
+    assert rows[0]["count"] == 0, "refused, rather than stored as a silent None"

@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import json
 import logging
+import math
 from collections import Counter
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Literal, Protocol
@@ -167,6 +168,27 @@ class MemorySink:
         return True
 
 
+def _record(ref_id: str) -> str:
+    """Render a record id as an expression, without ever concatenating it raw.
+
+    This is the one value in the event that is NOT a literal — it is a record
+    pointer, so quoting it would turn it into a string. That exception used to
+    be an injection: the id comes from the consumer, the ref rows are sent as a
+    multi-statement request, and a `;` inside the id closed the statement and
+    ran whatever followed. A single `Ref(id="news:n1; REMOVE TABLE news; --")`
+    dropped a table in the consumer's own database, and the drop counter logged
+    it as `refs_refused` — the damage done, reported as a benign instrument
+    failure.
+
+    `type::record` takes the table and the key as ordinary values, so both go
+    through `_literal` and nothing the consumer sends can leave its quotes.
+    (The function is `type::record` on 3.x; 2.x spells it `type::thing`, and
+    a 2.x adapter would need the other name.)
+    """
+    table, _, key = ref_id.partition(":")
+    return f"type::record({_literal(table)}, {_literal(key)})"
+
+
 def _literal(value: object) -> str:
     """Render a Python value as a SurrealQL literal.
 
@@ -179,13 +201,20 @@ def _literal(value: object) -> str:
     if isinstance(value, bool):
         return "true" if value else "false"
     if isinstance(value, (int, float)):
+        if isinstance(value, float) and not math.isfinite(value):
+            # SurrealDB reads `inf`/`nan` as undefined variables and stores
+            # NONE, so a score the caller sent would silently become an absence.
+            raise ValueError(f"non-finite number cannot be recorded: {value!r}")
         return repr(value)
     if isinstance(value, str):
         # json.dumps gives correct escaping for quotes, backslashes and control
         # characters, and SurrealQL accepts double-quoted strings. Hand-rolled
         # quoting here would be an injection surface in the one place that
         # writes the consumer's own database.
-        return json.dumps(value)
+        # ensure_ascii=False: the default emits surrogate pairs for anything
+        # outside the BMP, and SurrealDB rejects that escape — an emoji in a
+        # run_id would lose the whole event.
+        return json.dumps(value, ensure_ascii=False)
     if isinstance(value, list):
         return "[" + ", ".join(_literal(v) for v in value) + "]"
     if isinstance(value, dict):
@@ -260,19 +289,14 @@ class SurrealSink:
         if not refs:
             return True
         rows = []
-        for ref in refs:
-            row = ref.model_dump(exclude_none=True)
-            row_ts = row.pop("ts")
-            unit = row.pop("unit", None)
-            parts = {
-                "event": str(event_id),
-                "ts": f"d'{row_ts}'",
-                **({"unit": unit} if unit else {}),
-                **{k: _literal(v) for k, v in row.items()},
-            }
-            rows.append(
-                "CREATE tank_access_ref SET " + ", ".join(f"{k} = {v}" for k, v in parts.items())
-            )
+        try:
+            rows = self._ref_statements(event_id, refs)
+        except ValueError as exc:
+            # A value the consumer sent cannot be encoded without changing what
+            # it means. Its own reason, because "the sink broke" and "this value
+            # is not storable" call for different actions.
+            self.drops.drop("unencodable_value", exc)
+            return False
         try:
             results = await self._execute(";\n".join(rows) + ";", session.ns, session.db)
             failed = [r for r in results if r.get("status") != "OK"]
@@ -286,3 +310,20 @@ class SurrealSink:
             self.drops.drop("refs_failed", exc)
             return False
         return True
+
+    def _ref_statements(self, event_id: object, refs: list[AccessRefRow]) -> list[str]:
+        rows = []
+        for ref in refs:
+            row = ref.model_dump(exclude_none=True)
+            row_ts = row.pop("ts")
+            unit = row.pop("unit", None)
+            parts = {
+                "event": str(event_id),
+                "ts": f"d'{row_ts}'",
+                **({"unit": _record(unit)} if unit else {}),
+                **{k: _literal(v) for k, v in row.items()},
+            }
+            rows.append(
+                "CREATE tank_access_ref SET " + ", ".join(f"{k} = {v}" for k, v in parts.items())
+            )
+        return rows

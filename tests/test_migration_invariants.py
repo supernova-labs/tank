@@ -396,3 +396,75 @@ def test_a_missing_namespace_lets_most_of_the_migration_through(migrated):
         "and the rest look fine, which is what makes this hard to notice"
     )
     sql(f"REMOVE NAMESPACE IF EXISTS {ghost};", database="", namespace="")
+
+
+# --------------------------------- what the database can and cannot enforce
+
+
+def test_an_assert_on_a_readonly_field_never_re_runs(migrated):
+    """The additivity rule A6 depends on this, and it is easy to get backwards.
+
+    A READONLY field is skipped whole on UPDATE — type and assert alike — so an
+    assert added to one later is free, and never fires on old rows. A writable
+    field is re-validated on every UPDATE, touched or not. Since `tank prune`
+    writes `obs.*`, `error_message`, `scope_value` and `args_values`, those are
+    exactly the fields where a later assert can break the prune over the whole
+    historical series.
+    """
+    sql(
+        "DEFINE TABLE a6 SCHEMAFULL;"
+        "DEFINE FIELD ro ON a6 TYPE int READONLY;"
+        "DEFINE FIELD rw ON a6 TYPE int;"
+        "CREATE a6:1 SET ro = 5, rw = 1;",
+        migrated,
+    )
+    sql("DEFINE FIELD OVERWRITE ro ON a6 TYPE int READONLY ASSERT $value > 100;", migrated)
+    assert status("UPDATE a6:1 SET rw = 2;", migrated) == "OK", "READONLY: not re-evaluated"
+
+    sql("DEFINE FIELD OVERWRITE rw ON a6 TYPE int ASSERT $value > 100;", migrated)
+    assert status("UPDATE a6:1 SET ro = 5;", migrated) == "ERR", "writable: re-evaluated"
+
+
+def test_the_obs_asserts_are_in_row_and_cannot_see_the_other_tables(migrated):
+    """`obs.refs` holds against `n_refs`, not against the rows in
+    `tank_access_ref`. Purging the refs and leaving `obs.refs = 'observed'` is
+    therefore accepted — the database cannot enforce it, because an ASSERT only
+    sees `$this`. Marking it 'expired' is a convention `tank prune` has to keep,
+    and this test exists so nobody mistakes it for a guarantee.
+    """
+    assert write_event(migrated, "xtab", n_refs="3", obs=obs_with(refs="'observed'")) == "OK"
+    assert (
+        status(
+            "CREATE tank_access_ref:x1 SET event = tank_access_event:xtab, "
+            "ts = d'2026-09-23T10:00:00Z', unit_type = 'news', unit_key = 'news:n1', "
+            "stage = 'candidate';",
+            migrated,
+        )
+        == "OK"
+    )
+    assert status("DELETE tank_access_ref:x1;", migrated) == "OK"
+    # The event still claims three refs, and the database has no objection.
+    assert status("UPDATE tank_access_event:xtab SET obs.refs = 'observed';", migrated) == "OK"
+    row = sql("SELECT n_refs, obs.refs AS refs FROM tank_access_event:xtab;", migrated)[0]["result"]
+    assert row[0] == {"n_refs": 3, "refs": "observed"}
+
+
+def test_applying_a_modified_migration_is_swallowed_in_silence(migrated):
+    """`IF NOT EXISTS` makes re-application a clean no-op — including when the
+    file has CHANGED. The database says 0001 and the file says something else,
+    and the checksum in `tank_migration` is the only thing that could ever tell.
+    Which is why this file does not write that row: it cannot know its own hash,
+    so `tank migrate` has to.
+    """
+    modified = MIGRATION.read_text().replace(
+        "DEFINE FIELD IF NOT EXISTS run_id          ON tank_access_event TYPE string READONLY;",
+        "DEFINE FIELD IF NOT EXISTS run_id          ON tank_access_event TYPE uuid READONLY;",
+    )
+    assert modified != MIGRATION.read_text(), "the replacement has to bite"
+    results = sql(modified, migrated)
+    assert [r for r in results if r.get("status") != "OK"] == [], "no error at all"
+
+    info = sql("INFO FOR TABLE tank_access_event;", migrated)[0]["result"]
+    assert "TYPE string" in info["fields"]["run_id"], "and no effect either"
+    ledger = sql("SELECT count() FROM tank_migration GROUP ALL;", migrated)[0]["result"]
+    assert ledger[0]["count"] == 0, "the ledger that would catch it is empty"

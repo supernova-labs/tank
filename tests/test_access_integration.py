@@ -352,3 +352,107 @@ async def test_a_non_finite_score_is_refused_rather_than_stored_as_absence(migra
     assert sink.drops.reasons["unencodable_value"] == 1
     rows = sync_sql("SELECT count() FROM tank_access_ref GROUP ALL;", NS, migrated)[0]["result"]
     assert rows[0]["count"] == 0, "refused, rather than stored as a silent None"
+
+
+# ----------------------------------------- the guard that must not go blind
+
+
+async def test_every_refusal_is_counted_not_only_the_first(unmigrated):
+    """One drop for five lost events is the silent zero the counter exists to
+    prevent. Counting only the first refusal meant "no events" and "events we
+    failed to write" collapsed into the same number again, one layer down."""
+    registry = Registry(ontology())
+    sink = SurrealSink(execute)
+
+    @registry.access_tool(name="t", version="1.0.0", returns=Candidate, via="own")
+    async def t() -> list[Candidate]:
+        return [Candidate(type="news", id="news:n1")]
+
+    async with session(registry, sink, ns=NS, db=unmigrated, run_id="r1"):
+        for _ in range(5):
+            await t()
+
+    assert sink.drops.reasons["table_missing"] == 5
+
+
+async def test_a_tenant_migrated_later_is_picked_up(unmigrated):
+    """A permanent negative meant a tenant provisioned after boot stayed dark
+    until the process restarted — silently, since the drop had stopped being
+    counted too."""
+    registry = Registry(ontology())
+    clock = [0.0]
+    sink = SurrealSink(execute, clock=lambda: clock[0])
+
+    @registry.access_tool(name="t", version="1.0.0", returns=Candidate, via="own")
+    async def t() -> list[Candidate]:
+        return [Candidate(type="news", id="news:n1")]
+
+    async with session(registry, sink, ns=NS, db=unmigrated, run_id="r1"):
+        await t()
+        assert sink.drops.reasons["table_missing"] == 1
+
+        # Migrate while the process stays alive, then let the backoff elapse.
+        failed = [
+            r for r in sync_sql(MIGRATION.read_text(), NS, unmigrated) if r.get("status") != "OK"
+        ]
+        assert not failed
+        clock[0] += SurrealSink.RECHECK_AFTER[0] + 1
+        await t()
+
+    stored = sync_sql("SELECT count() FROM tank_access_event GROUP ALL;", NS, unmigrated)[0][
+        "result"
+    ]
+    assert stored[0]["count"] == 1, "the second call landed"
+
+
+async def test_the_probe_is_not_repeated_on_every_call_while_it_is_failing(unmigrated):
+    """The backoff has to hold in both directions: re-probing a broken tenant
+    on every call would put an `INFO FOR DB` on the hot path of a system that
+    is already in trouble."""
+    registry = Registry(ontology())
+    clock = [0.0]
+    probes = []
+
+    async def counting_execute(statements: str, ns: str, db: str) -> list:
+        if statements.startswith("INFO FOR DB"):
+            probes.append(clock[0])
+        return await execute(statements, ns, db)
+
+    sink = SurrealSink(counting_execute, clock=lambda: clock[0])
+
+    @registry.access_tool(name="t", version="1.0.0", via="own")
+    async def t() -> list[Candidate]:
+        return []
+
+    async with session(registry, sink, ns=NS, db=unmigrated, run_id="r1"):
+        for _ in range(4):
+            await t()
+
+    assert len(probes) == 1, "one probe for four calls"
+    assert sink.drops.reasons["table_missing"] == 4, "but every refusal counted"
+
+
+async def test_forget_lets_a_reprovisioned_tenant_be_re_probed(migrated):
+    """The positive answer is cached without expiry on purpose — re-probing a
+    healthy tenant every call would cost an `INFO FOR DB` per tool call. So a
+    tenant re-provisioned under a live process has to say so, and until it does
+    the sink writes blind and fabricates exactly the schemaless table the guard
+    exists to prevent."""
+    registry = Registry(ontology())
+    sink = SurrealSink(execute)
+
+    @registry.access_tool(name="t", version="1.0.0", via="own")
+    async def t() -> list[Candidate]:
+        return []
+
+    async with session(registry, sink, ns=NS, db=migrated, run_id="r1"):
+        await t()
+        assert (NS, migrated) in sink._checked
+
+        sink.forget(NS, migrated)
+        assert (NS, migrated) not in sink._checked
+        await t()
+
+    assert sink.drops.total == 0
+    stored = sync_sql("SELECT count() FROM tank_access_event GROUP ALL;", NS, migrated)[0]["result"]
+    assert stored[0]["count"] == 2

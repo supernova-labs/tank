@@ -23,6 +23,7 @@ own table (the doctor never writes, not even to its own tables).
 
 from __future__ import annotations
 
+import asyncio
 import functools
 import hashlib
 import inspect
@@ -212,8 +213,8 @@ class Registry:
                     # would otherwise keep reporting this tool after it returned.
                     frame.open = False
                     frame.elapsed = time.perf_counter() - started
-                    _FRAME_VAR.reset(token)
-                    await emit(frame)
+                    _reset_quietly(_FRAME_VAR, token, session)
+                    await _emit_guarded(frame)
 
             return wrapper
 
@@ -368,12 +369,22 @@ def _observability(frame: ToolFrame) -> Observability:
         # "this tool has no scope" is what makes it fixable.
         scope_state = "unbound"
 
-    if frame.normalize_failed:
+    # Order matters, and it is the order of what actually happened. Deriving
+    # this from `n_refs` alone put 'undeclared_stage' on every failed call —
+    # a reason contradicted by the `stage` column on the same row.
+    if frame.error is not None:
+        refs_state = "errored"
+    elif frame.normalize_failed:
         refs_state = "normalize_failed"
+    elif descriptor.stage == "ref":
+        # `Ref` is the stage with no rows by design. `n_refs` is still true, but
+        # nothing was written, so claiming 'observed' would make
+        # sum(n_refs) disagree with count(tank_access_ref) for an honest call.
+        refs_state = "undeclared_stage"
     elif frame.n_refs is not None:
         refs_state = "observed"
     else:
-        refs_state = "undeclared_stage"
+        refs_state = "normalize_failed"
 
     return Observability(
         scope=scope_state,
@@ -403,6 +414,13 @@ def build_event(frame: ToolFrame) -> tuple[AccessEvent, list[AccessRefRow]]:
         run_id=session.run_id,
         sample_rate=1.0,
         capture_mode="direct",
+        # Always `in_frame` here, and not because it was not derived: an event
+        # built by the decorator IS the call, so there is nothing to attribute.
+        # `stale` and `none` describe a QUERY rather than a call and belong to
+        # the gateway, which calls `attribution_of` below. Until it exists, no
+        # stored event can carry either — so a reader counting `attribution` in
+        # this slice is reading a constant, and the tool-less bucket that the
+        # design says must never be silenced is not yet observable at all.
         attribution="in_frame",
         caller_kind=session.caller_kind,
         error_class="none" if error is None else classify_error(error),
@@ -438,13 +456,73 @@ def build_event(frame: ToolFrame) -> tuple[AccessEvent, list[AccessRefRow]]:
                     unit_key=ref.id,
                     unit=ref.id if ":" in ref.id else None,
                     stage=stage,
-                    rank=getattr(ref, "rank", None) or position,
+                    # `or position` would eat a rank of 0, and 0-based rankers
+                    # are the norm — two refs would land on rank 1.
+                    rank=position if getattr(ref, "rank", None) is None else ref.rank,
                     score=getattr(ref, "score", None),
                     unit_version=getattr(ref, "version", None),
                     content_hash=getattr(ref, "content_hash", None),
                 )
             )
     return event, rows
+
+
+#: How long the instrument may hold the caller's call open to record it.
+#: Without a ceiling a sink that hangs hangs the tool: measured, a sink
+#: sleeping an hour kept the consumer's call from ever returning.
+EMIT_TIMEOUT = 5.0
+
+
+def _reset_quietly(var: Any, token: Any, session: Session) -> None:
+    """Restore the ContextVar without letting the restore break the call.
+
+    `ContextVar.reset` raises when the token was created in another Context,
+    which happens when a coroutine is driven from two of them. That raise comes
+    out of a `finally`, so it destroys the caller's result — the instrument
+    failing the subject.
+    """
+    try:
+        var.reset(token)
+    except ValueError as exc:
+        session.sink.drops.drop("context_reset_failed", exc)
+
+
+async def _emit_guarded(frame: ToolFrame) -> None:
+    """Record the call without ever becoming the reason it failed.
+
+    Three things are wrong with a bare `await emit(frame)` in a `finally`, and
+    all three were measured:
+
+    - a cancellation arriving while the write is in flight kills it, and
+      `CancelledError` is a `BaseException`, so it walks past `emit`'s own
+      handler. In the error path the caller then receives the INSTRUMENT's
+      exception in place of the tool's; in the success path it receives an
+      exception instead of the result. The instrument inventing a failure is
+      the one thing this decorator must never do.
+    - the same cancellation loses the event with no drop counted, which is the
+      silent zero the counter exists to prevent.
+    - a sink that hangs hangs the tool, with no ceiling at all.
+
+    `shield` keeps the write alive across a cancellation; `wait_for` bounds it;
+    and `except BaseException` means nothing from in here reaches the caller.
+    The order is deliberate: `wait_for` outside so the deadline can fire, the
+    shield inside so the write already started is not abandoned mid-statement.
+    """
+    session = frame.session
+    try:
+        await asyncio.wait_for(asyncio.shield(emit(frame)), EMIT_TIMEOUT)
+    except TimeoutError:
+        session.sink.drops.drop("emit_timeout")
+    except asyncio.CancelledError:
+        # The caller cancelled. That is the caller's decision about the caller's
+        # own call, so it propagates — swallowing it would turn an abandoned
+        # call into a completed one, which is the instrument inventing a
+        # success. What the shield already did is keep the write alive, so the
+        # event lands even though the call does not.
+        session.sink.drops.drop("emit_cancelled")
+        raise
+    except BaseException as exc:  # noqa: BLE001 - see the docstring; nothing escapes
+        session.sink.drops.drop("emit_interrupted", exc)
 
 
 async def emit(frame: ToolFrame) -> bool:
@@ -474,14 +552,20 @@ def _tank_version() -> str:
     return __version__
 
 
-def orphan_frame_attribution() -> str:
-    """What a query outside any open frame should be attributed to.
+def attribution_of() -> str:
+    """Which tool a QUERY happening right now belongs to.
 
-    Exposed for the gateway, which is the other half of this and does not exist
-    yet. Kept here so the three states stay defined in one place: `in_frame` is
-    a live call, `stale` is a frame that outlived its tool, and `none` is
-    genuine tool-less traffic that must never be silenced — silencing it would
-    erase legitimate tool traffic from a thread that did not inherit context.
+    The gateway's half of the three states, kept here so they stay defined in
+    one place: `in_frame` is a live call, `stale` is a frame that outlived its
+    tool, and `none` is genuine tool-less traffic that must never be silenced —
+    silencing it would erase the queries of any tool that hands its work to a
+    thread which did not inherit the context.
+
+    Measured, and the asymmetry is worth knowing before the gateway is written:
+    `asyncio.to_thread` copies the context and reads `in_frame`, while
+    `loop.run_in_executor` and a bare `ThreadPoolExecutor` do not and read
+    `none`. Two ways of writing "the tool does its query in a thread", with
+    opposite answers.
     """
     frame = current_frame()
     if frame is None:

@@ -18,6 +18,7 @@ from __future__ import annotations
 import json
 import logging
 import math
+import time
 from collections import Counter
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Literal, Protocol
@@ -68,7 +69,9 @@ class Observability(BaseModel):
     args: Literal["observed", "shape_only", "redacted", "expired"]
     error_message: Literal["observed", "not_applicable", "redacted", "expired"]
     skill: Literal["reported", "none", "not_reported"]
-    refs: Literal["observed", "undeclared_stage", "normalize_failed", "below_mode", "expired"]
+    refs: Literal[
+        "observed", "undeclared_stage", "normalize_failed", "errored", "below_mode", "expired"
+    ]
 
 
 class AccessEvent(BaseModel):
@@ -234,16 +237,42 @@ class SurrealSink:
     write when it is not, and does not bring the call down.
     """
 
-    def __init__(self, execute: Any) -> None:
+    #: A tenant that is not ready is re-probed on this schedule rather than
+    #: never. A permanent negative meant a tenant provisioned after boot stayed
+    #: dark until the process restarted; a permanent positive meant a tenant
+    #: re-provisioned under a live process got written to blind, fabricating the
+    #: schemaless table the guard exists to prevent. Both were measured.
+    RECHECK_AFTER = (30.0, 60.0, 300.0)
+
+    def __init__(self, execute: Any, clock: Any = None) -> None:
         #: async callable (sql, ns, db) -> list of statement results
         self._execute = execute
         self.drops = DropCounter()
-        self._checked: dict[tuple[str, str], bool] = {}
+        #: (ns, db) -> (ready, checked_at, consecutive failures)
+        self._checked: dict[tuple[str, str], tuple[bool, float, int]] = {}
+        self._clock = clock or time.monotonic
+
+    def _backoff(self, failures: int) -> float:
+        return self.RECHECK_AFTER[min(failures, len(self.RECHECK_AFTER) - 1)]
 
     async def _table_is_ready(self, session: Session) -> bool:
+        """Is this tenant migrated? Cached, but never forever.
+
+        The drop is counted on EVERY refusal, not only the first. Counting it
+        once meant five lost events reported as one — and "no events" against
+        "events we failed to write" collapsing into the same zero is the thing
+        the counter exists to prevent.
+        """
         key = (session.ns, session.db)
-        if key in self._checked:
-            return self._checked[key]
+        now = self._clock()
+        cached = self._checked.get(key)
+        if cached is not None:
+            ready, checked_at, failures = cached
+            if ready or now - checked_at < self._backoff(failures):
+                if not ready:
+                    self.drops.drop("table_missing")
+                return ready
+
         try:
             info = await self._execute("INFO FOR DB;", session.ns, session.db)
             tables = (info[0].get("result") or {}).get("tables", {})
@@ -252,10 +281,23 @@ class SurrealSink:
         except Exception as exc:  # noqa: BLE001 - an unreachable database is a drop, not a crash
             self.drops.drop("bootstrap_failed", exc)
             return False
-        self._checked[key] = ready
+
+        failures = 0 if ready else (cached[2] + 1 if cached else 0)
+        self._checked[key] = (ready, now, failures)
         if not ready:
             self.drops.drop("table_missing")
         return ready
+
+    def forget(self, ns: str, db: str) -> None:
+        """Drop what we believe about a tenant, so the next call probes again.
+
+        For the case the backoff cannot see: a tenant re-provisioned while this
+        process is alive. The positive answer is cached without expiry on
+        purpose — re-probing a healthy tenant on every call would put an
+        `INFO FOR DB` on the hot path of every tool call in the system — so a
+        re-provision needs to say so.
+        """
+        self._checked.pop((ns, db), None)
 
     async def write(self, session: Session, event: AccessEvent, refs: list[AccessRefRow]) -> bool:
         if not await self._table_is_ready(session):

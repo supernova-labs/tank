@@ -317,16 +317,16 @@ async def test_a_raw_thread_does_not_inherit_the_frame(registry, sink):
     never silenced: silencing it would erase legitimate tool traffic, and a tool
     whose queries all come through a raw thread would read as "never called".
     """
-    from tank.access.registry import orphan_frame_attribution
+    from tank.access.registry import attribution_of
 
     seen: list[str] = []
 
     @registry.access_tool(name="threaded", version="1.0.0", via="own")
     async def threaded() -> list[Ref]:
-        thread = threading.Thread(target=lambda: seen.append(orphan_frame_attribution()))
+        thread = threading.Thread(target=lambda: seen.append(attribution_of()))
         thread.start()
         thread.join()
-        seen.append(orphan_frame_attribution())
+        seen.append(attribution_of())
         return []
 
     async with run(registry, sink):
@@ -340,7 +340,7 @@ async def test_work_outliving_the_tool_reads_as_stale_not_in_frame(registry, sin
     attributing it. The frame carries an `open` flag, closed BEFORE the
     ContextVar is reset, precisely so that a task which outlives its tool is
     detected instead of credited."""
-    from tank.access.registry import orphan_frame_attribution
+    from tank.access.registry import attribution_of
 
     seen: list[str] = []
     released = asyncio.Event()
@@ -349,7 +349,7 @@ async def test_work_outliving_the_tool_reads_as_stale_not_in_frame(registry, sin
     async def fire_and_forget() -> list[Ref]:
         async def later():
             await released.wait()
-            seen.append(orphan_frame_attribution())
+            seen.append(attribution_of())
 
         asyncio.create_task(later())
         return []
@@ -510,3 +510,193 @@ def test_the_descriptor_is_neutral_enough_to_build_an_adapter_from(registry):
     assert d.stage == "evidence"
     assert d.description == "Full-text search over the newsroom."
     assert list(d.signature.parameters) == ["q", "limit"]
+
+
+# ---------------------------------- the instrument never becomes the failure
+
+
+async def test_a_cancellation_during_the_write_does_not_reach_the_caller(registry):
+    """The failure this guard exists for, and it had two faces.
+
+    A cancel arriving while the event is being written killed the write —
+    `CancelledError` is a BaseException, so it walked past `emit`'s handler. In
+    the error path the caller then got the INSTRUMENT's exception in place of
+    the tool's; in the success path it got an exception instead of its result.
+    """
+
+    class SlowSink(MemorySink):
+        async def write(self, *a, **k):
+            await asyncio.sleep(0.05)
+            return await super().write(*a, **k)
+
+    sink = SlowSink()
+
+    @registry.access_tool(name="ok", version="1.0.0", returns=Candidate, via="own")
+    async def ok() -> list[Candidate]:
+        return [Candidate(type="news", id="news:n1")]
+
+    async with run(registry, sink):
+        task = asyncio.create_task(ok())
+        await asyncio.sleep(0.01)
+        task.cancel()
+        # The cancel is the caller's decision about the caller's call, so it
+        # propagates. What must NOT happen is the event vanishing with it.
+        with pytest.raises(asyncio.CancelledError):
+            await task
+        await asyncio.sleep(0.15)
+
+    assert len(sink.events) == 1, "shield kept the write alive across the cancel"
+    # The tool itself finished; the cancel arrived afterwards, while the event
+    # was being written. So the event says the call succeeded — which is true —
+    # the caller gets the cancellation it asked for, and the interruption of the
+    # WRITE is recorded separately. Three honest facts instead of one merged one.
+    assert sink.events[0].error_class == "none"
+    assert sink.drops.reasons["emit_cancelled"] == 1
+
+
+async def test_a_sink_that_hangs_does_not_hang_the_tool(registry, monkeypatch):
+    """Measured before the fix: a sink sleeping an hour kept the consumer's
+    call from ever returning. The instrument does not get to hold the call open
+    indefinitely to record it."""
+    monkeypatch.setattr("tank.access.registry.EMIT_TIMEOUT", 0.05)
+
+    class HangingSink(MemorySink):
+        async def write(self, *a, **k):
+            await asyncio.sleep(3600)
+
+    sink = HangingSink()
+
+    @registry.access_tool(name="ok", version="1.0.0", returns=Candidate, via="own")
+    async def ok() -> list[Candidate]:
+        return [Candidate(type="news", id="news:n1")]
+
+    async with run(registry, sink):
+        result = await asyncio.wait_for(ok(), timeout=1.0)
+
+    assert [r.id for r in result] == ["news:n1"]
+    assert sink.drops.reasons["emit_timeout"] == 1
+
+
+async def test_a_sink_raising_baseexception_does_not_replace_the_tools_result(registry):
+    """`emit` used to catch `Exception`, so anything below it escaped."""
+
+    class InstrumentFailure(BaseException):
+        """Below `Exception`, which is exactly what used to escape."""
+
+    class BrutalSink(MemorySink):
+        async def write(self, *a, **k):
+            raise InstrumentFailure("the instrument, not the subject")
+
+    sink = BrutalSink()
+
+    @registry.access_tool(name="ok", version="1.0.0", returns=Candidate, via="own")
+    async def ok() -> list[Candidate]:
+        return [Candidate(type="news", id="news:n1")]
+
+    async with run(registry, sink):
+        result = await ok()
+
+    assert [r.id for r in result] == ["news:n1"]
+    assert sink.drops.reasons["emit_interrupted"] == 1
+
+
+async def test_a_sink_raising_baseexception_does_not_replace_the_tools_exception(registry):
+    class InstrumentFailure(BaseException):
+        """Below `Exception`, which is exactly what used to escape."""
+
+    class BrutalSink(MemorySink):
+        async def write(self, *a, **k):
+            raise InstrumentFailure("the instrument, not the subject")
+
+    sink = BrutalSink()
+    boom = ValueError("the tool's own failure")
+
+    @registry.access_tool(name="bad", version="1.0.0", via="own")
+    async def bad() -> list[Ref]:
+        raise boom
+
+    with pytest.raises(ValueError) as caught:
+        async with run(registry, sink):
+            await bad()
+
+    assert caught.value is boom, "the subject's exception, not the instrument's"
+
+
+# ------------------------------------------- the reason for an absence is true
+
+
+async def test_a_failed_call_says_it_failed_rather_than_blaming_the_stage(registry, sink):
+    """`undeclared_stage` used to land on every call that raised — on events
+    whose own `stage` column was filled in on the same row. A reason that
+    contradicts its own event is the thing `obs.*` exists to prevent."""
+
+    @registry.access_tool(name="boom", version="1.0.0", returns=Candidate, via="own")
+    async def boom() -> list[Candidate]:
+        raise TimeoutError("upstream")
+
+    with pytest.raises(TimeoutError):
+        async with run(registry, sink):
+            await boom()
+
+    event = sink.events[0]
+    assert event.obs.refs == "errored"
+    assert event.stage == "candidate", "the stage WAS declared, which is why the old label lied"
+    assert event.n_refs is None
+
+
+async def test_the_stage_with_no_rows_says_so_instead_of_claiming_observed(registry, sink):
+    """`returns=Ref` is the stage that stores nothing by design. Claiming
+    `observed` made sum(n_refs) disagree with count(tank_access_ref) for a
+    perfectly honest call, and put its units on the never-accessed list."""
+
+    @registry.access_tool(name="plain", version="1.0.0", via="own")
+    async def plain() -> list[Ref]:
+        return [Ref(type="news", id="news:n1"), Ref(type="news", id="news:n2")]
+
+    async with run(registry, sink):
+        await plain()
+
+    event = sink.events[0]
+    assert event.obs.refs == "undeclared_stage"
+    assert event.n_refs == 2, "the count is true; what is absent is the rows"
+    assert sink.refs == []
+
+
+async def test_rank_zero_survives(registry, sink):
+    """0-based rankers are the norm, and `or position` ate the zero — two refs
+    landed on rank 1 in the same event."""
+
+    @registry.access_tool(name="ranked", version="1.0.0", returns=Candidate, via="own")
+    async def ranked() -> list[Candidate]:
+        return [
+            Candidate(type="news", id="news:n1", rank=0),
+            Candidate(type="news", id="news:n2", rank=1),
+        ]
+
+    async with run(registry, sink):
+        await ranked()
+
+    ranks = [r.rank for r in sink.refs]
+    assert ranks == [0, 1]
+    assert len(set(ranks)) == len(ranks), "rank is unique within the event"
+
+
+@pytest.mark.parametrize(
+    ("exc", "expected"),
+    [
+        (PermissionError("denied"), "permission"),
+        (TimeoutError("slow"), "timeout"),
+        (ConnectionRefusedError("refused"), "connection"),
+        (FileNotFoundError("gone"), "not_found"),
+        (KeyError("k"), "not_found"),
+        (OSError("generic"), "connection"),
+    ],
+    ids=lambda v: getattr(v, "__class__", type(v)).__name__ if not isinstance(v, str) else v,
+)
+def test_error_classes_are_matched_most_specific_first(exc, expected):
+    """`PermissionError` is a subclass of `OSError`, so listing OSError first
+    made `permission` unreachable and collapsed "access was denied" into "the
+    network failed" — two opposite attributions of blame."""
+    from tank.access.context import classify_error
+
+    assert classify_error(exc) == expected

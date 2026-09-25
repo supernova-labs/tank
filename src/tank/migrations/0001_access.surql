@@ -201,8 +201,18 @@ DEFINE FIELD IF NOT EXISTS obs.skill ON tank_access_event TYPE
 -- against `tank_access_plan`. Marking those two 'expired' after a purge is a
 -- convention `tank prune` has to keep; the database cannot enforce it, because
 -- an ASSERT only sees `$this`.
+--   observed          the call returned refs AND the declared stage stores them
+--   undeclared_stage  the declared stage is `ref`, which has no rows by design;
+--                     `n_refs` may still be set, and it is true, but nothing in
+--                     `tank_access_ref` corresponds to it. Any question asked
+--                     against that table must filter on 'observed' alone.
+--   normalize_failed  the return could not be read as list[<returns>]
+--   errored           the call raised before returning anything. Added because
+--                     the absence had been landing as 'undeclared_stage' on
+--                     events whose `stage` column was filled in on the same
+--                     row — a reason that contradicted its own event.
 DEFINE FIELD IF NOT EXISTS obs.refs ON tank_access_event TYPE
-  'observed'|'undeclared_stage'|'normalize_failed'|'below_mode'|'expired'
+  'observed'|'undeclared_stage'|'normalize_failed'|'errored'|'below_mode'|'expired'
   ASSERT $value != 'observed' OR $this.n_refs != NONE;
 
 -- The biconditional lives HERE, on the writable field, and not only on

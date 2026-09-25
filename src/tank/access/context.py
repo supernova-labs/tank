@@ -35,11 +35,17 @@ CallerKind = Literal["tool", "migration", "maintenance", "console", "eval", "unk
 #: `tool` is the catch-all for an exception raised by the consumer's own code:
 #: without the split, every environment failure and every skill failure would
 #: read as "the ontology failed" in the summary.
+#: Ordered most specific to least. The order is the rule, not a detail:
+#: `PermissionError` is a subclass of `OSError`, so listing OSError first made
+#: `permission` unreachable and collapsed "access was denied" into "the network
+#: failed" — two opposite attributions of blame.
 _ERROR_CLASSES: tuple[tuple[tuple[type[BaseException], ...], str], ...] = (
-    ((TimeoutError,), "timeout"),
-    ((ConnectionError, OSError), "connection"),
     ((PermissionError,), "permission"),
+    ((TimeoutError,), "timeout"),
+    ((FileNotFoundError,), "not_found"),
+    ((ConnectionError,), "connection"),
     ((KeyError, LookupError), "not_found"),
+    ((OSError,), "connection"),
 )
 
 

@@ -27,8 +27,14 @@
 --   A3 widening a closed vocabulary is additive; narrowing never is.
 --   A4 a new value, never a new meaning for an existing one.
 --   A6 a new ASSERT only lands if every existing row already satisfies it —
---      ASSERT re-runs on UPDATE, and `tank prune` is an UPDATE, so an assert
---      added later would make the prune fail on old rows.
+--      but only on a WRITABLE field. Measured: a READONLY field is skipped
+--      whole on UPDATE, TYPE and ASSERT alike, so an assert added to one never
+--      re-runs and is free. On a writable field it is re-evaluated on every
+--      UPDATE, touched or not. In this table the writable fields are exactly
+--      `error_message`, `scope_value`, `args_values` and the six `obs.*` — which
+--      is to say, exactly the fields `tank prune` writes. An assert or a type
+--      change on any of them breaks the prune over the whole historical series,
+--      and the break only shows up on the day the prune runs.
 --
 --   A new `obs.<dimension>` is the expensive case: it is non-`option`, so every
 --   historical row becomes un-updatable and `tank prune` breaks over the whole
@@ -42,6 +48,14 @@
 -- Without a version table, "this database is on 0001" and "this database has no
 -- Tank tables" would be indistinguishable.
 
+-- This file does NOT write its own row: it cannot know its own checksum. Writing
+-- the ledger entry is `tank migrate`'s job, and until that command exists the
+-- table stays empty — so "this database is on 0001" and "this database has no
+-- Tank" are, for now, still indistinguishable. Two consequences worth knowing
+-- before `tank migrate` is written, both measured: applying this file twice is a
+-- clean no-op (`IF NOT EXISTS` throughout), and so is applying a MODIFIED
+-- version of it — the divergence is swallowed in silence, and the checksum in
+-- this ledger is the only thing that could ever detect it.
 DEFINE TABLE IF NOT EXISTS tank_migration TYPE NORMAL SCHEMAFULL PERMISSIONS NONE;
 DEFINE FIELD IF NOT EXISTS name         ON tank_migration TYPE string READONLY;
 DEFINE FIELD IF NOT EXISTS applied_at   ON tank_migration TYPE datetime VALUE time::now() READONLY;
@@ -179,8 +193,26 @@ DEFINE FIELD IF NOT EXISTS obs.skill ON tank_access_event TYPE
 -- 'expired' is the amendment: refs is the dimension that feeds "units never
 -- accessed", which produces a list of deletion candidates. Without it, a ref
 -- expired by retention reads as a ref that never happened.
+--
+-- Note what this assert does NOT do. It is in-row: it holds `obs.refs` against
+-- `n_refs`, which is READONLY and never goes away, NOT against the rows in
+-- `tank_access_ref`. So `DELETE FROM tank_access_ref` followed by
+-- `obs.refs = 'observed'` is accepted, and the same is true of `obs.plan`
+-- against `tank_access_plan`. Marking those two 'expired' after a purge is a
+-- convention `tank prune` has to keep; the database cannot enforce it, because
+-- an ASSERT only sees `$this`.
+--   observed          the call returned refs AND the declared stage stores them
+--   undeclared_stage  the declared stage is `ref`, which has no rows by design;
+--                     `n_refs` may still be set, and it is true, but nothing in
+--                     `tank_access_ref` corresponds to it. Any question asked
+--                     against that table must filter on 'observed' alone.
+--   normalize_failed  the return could not be read as list[<returns>]
+--   errored           the call raised before returning anything. Added because
+--                     the absence had been landing as 'undeclared_stage' on
+--                     events whose `stage` column was filled in on the same
+--                     row — a reason that contradicted its own event.
 DEFINE FIELD IF NOT EXISTS obs.refs ON tank_access_event TYPE
-  'observed'|'undeclared_stage'|'normalize_failed'|'below_mode'|'expired'
+  'observed'|'undeclared_stage'|'normalize_failed'|'errored'|'below_mode'|'expired'
   ASSERT $value != 'observed' OR $this.n_refs != NONE;
 
 -- The biconditional lives HERE, on the writable field, and not only on

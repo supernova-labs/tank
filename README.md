@@ -122,6 +122,65 @@ uv run tank check --ontology ontology.py --url http://127.0.0.1:8000 --ns my_ns 
 
 The report validates the database against the declaration — does the table exist? do declared fields have a `DEFINE FIELD` (or, without one, are they present in sampled rows)? does the declared value vocabulary match the data? does the edge have the declared direction? does the vector index exist with the right dimension and metric? — with four states (`PASS`/`FAIL`/`WARN`/`VACUOUS` — an empty table never passes silently), a header naming the exact environment validated, and a fixed section listing what is **not** verified. A non-zero exit code breaks CI; `--strict` promotes warnings to errors; `--json` for machines.
 
+## Tank 0.2 — the access trail (`access_tool`)
+
+0.2 records how agents actually use what you declared. An access tool is an
+async function you decorate; Tank opens and closes the boundary of the call,
+measures it, classifies any exception **without altering it**, and writes one
+event per call plus one row per unit returned.
+
+```python
+from tank.access import Candidate, Registry, SurrealSink, refs_from, session
+
+registry = Registry(ontology)          # binds at import, blind to the tenant
+
+
+@registry.access_tool(
+    name="news_by_entity",             # a join key: explicit, never __name__
+    version="1.0.0",                   # declared, never a hash of the body
+    returns=Candidate,                 # Ref | Candidate | Evidence
+    via="own",                         # "own" | "gateway" — no default
+    scope="entity",                    # WHICH kind of cut
+    scope_from="entity_id",            # and which argument carries its value
+)
+async def news_by_entity(entity_id: str, limit: int = 20) -> list[Candidate]:
+    rows = await your_own_query(...)   # the SQL is 100% yours
+    return refs_from(rows, type="news", stage=Candidate)
+
+
+# the tenant binds separately, at the call
+async with session(registry, SurrealSink(conn), ns="acme", db="newsroom",
+                   run_id="conv-7d2f/msg-3"):
+    await news_by_entity("entity:e1")
+```
+
+Apply the schema first — `src/tank/migrations/0001_access.surql` — because the
+event's core columns are non-`option` with no backfill, and the sink refuses to
+write into a database that has not been migrated rather than letting SurrealDB
+fabricate a schemaless table on the first insert.
+
+**The rule the decorator runs on is "marked, never silenced":**
+
+- **Your exception is yours.** There is no `swallow=True`, not even opt-in. It
+  propagates as the same object, and the event records its class and type.
+- **A failure of the instrument is not a failure of your call.** If the event
+  cannot be written, that is swallowed, logged and counted; your result returns
+  untouched.
+- **Absence is always named.** No field is left empty without the event saying
+  why. A tool that declares a scope and receives no value for it records
+  `unbound`, which is a different fact from `undeclared` — one is an
+  instrumentation defect and the other is how the tool is meant to work.
+
+That last rule is the whole design. Asking "was the scope respected?" over four
+events where only one declared a scope answers `UNOBSERVABLE, 3 of 4`, with the
+reason per event. The same question asked of a nullable column answers `4 of 4`.
+
+**What 0.2 does not do yet:** the gateway that reads the query plan (so
+`capture_mode` is `direct` and `obs.plan` says `below_mode` on every event),
+`tank migrate`, the analytics command, and citation records — `use_link` and
+`record_usage` are 0.3, where `returned` will be *derived* from the trail rather
+than self-reported.
+
 ## Install
 
 ```bash
